@@ -1,7 +1,7 @@
 # LUNA PELÓN — CONTRATO DEL NÚCLEO
 
-**Versión:** v0.2.0
-**Estado:** FUNDACIÓN MODULAR RPG
+**Versión:** v0.3.0
+**Estado:** FUNDACIÓN DEL MUNDO RPG
 
 ## Reglas de mando
 1. `main` es estable. Toda funcionalidad experimental nace en una rama aislada.
@@ -25,6 +25,9 @@
 - estado persistente seguro;
 - controles PC/móvil;
 - conexiones entre core y sistemas;
+- mundo definido por datos, no por renderer;
+- colisiones gobernadas por sistema;
+- entidades con identificadores estables;
 - ausencia de referencias muertas;
 - versión coherente;
 - documentación actualizada;
@@ -33,7 +36,7 @@
 - rollback disponible.
 
 ## Capas futuras obligatorias
-El RPG podrá incorporar progresivamente mundo, escenas/interiores, navegación, colisiones, NPCs con rutinas, diálogo, misiones, inventario, objetos, economía, actividades, reputación, tiempo, clima, audio, animaciones, historia, accesibilidad, localización, telemetría técnica y guardados migrables sin romper las capas anteriores.
+El RPG podrá incorporar progresivamente escenas/interiores, navegación, NPCs con rutinas, diálogo, misiones, inventario, objetos, economía, actividades, reputación, tiempo, clima, audio, animaciones, historia, accesibilidad, localización, telemetría técnica y guardados migrables sin romper las capas anteriores.
 
 ## Prohibición
-No hacer limpiezas destructivas para "empezar de nuevo". Se reconstruye por capas y con respaldo.
+No hacer limpiezas destructivas para "empezar de nuevo". Se construye por capas y con respaldo.

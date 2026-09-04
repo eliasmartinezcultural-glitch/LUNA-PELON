@@ -1,5 +1,34 @@
-export const VERSION='v0.2.0';
-export const WORLD={width:2400,height:1500,spawn:{x:360,y:760},river:{x:1810,width:220},bridge:{x:1690,y:650,w:460,h:100}};
-export const NPCS=[{id:'marta',name:'Marta',x:760,y:690,color:'#9b5b43',text:'Hola, Luna. Si querés conocer Villa Pelón, empezá por mirar el territorio y escuchar sus historias.'},{id:'tomas',name:'Tomás',x:1320,y:930,color:'#536d4b',text:'El paisaje también guarda memoria: el río, las chacras y los caminos ayudan a entender cómo se construyó una comunidad.'}];
-export const DISCOVERY={id:'first-memory',x:1040,y:520,title:'Primera huella',text:'El primer aprendizaje de Luna: una historia local no vive solamente en fechas. También vive en el territorio, sus caminos, el agua, el trabajo y las personas.'};
+export const VERSION='v0.3.0';
+
+export const WORLD={
+  width:2400,
+  height:1500,
+  spawn:{x:360,y:760},
+  river:{x:1810,width:220},
+  bridge:{x:1690,y:650,w:460,h:100},
+  zones:[
+    {id:'town',name:'Villa Pelón',x:120,y:180,width:1450,height:650},
+    {id:'chacras',name:'Chacras',x:120,y:830,width:1450,height:520},
+    {id:'river-west',name:'Ribera',x:1570,y:180,width:240,height:1170},
+    {id:'river-east',name:'Más allá del río',x:2030,y:180,width:250,height:1170}
+  ],
+  obstacles:[
+    {id:'house-marta',x:270,y:420,width:190,height:150},
+    {id:'river-north',x:1810,y:0,width:220,height:650},
+    {id:'river-south',x:1810,y:750,width:220,height:750}
+  ],
+  points:{
+    spawn:{x:360,y:760},
+    marta:{x:760,y:690},
+    tomas:{x:1320,y:930},
+    firstMemory:{x:1040,y:520}
+  }
+};
+
+export const NPCS=[
+  {id:'marta',type:'npc',name:'Marta',x:760,y:690,color:'#9b5b43',text:'Hola, Luna. Si querés conocer Villa Pelón, empezá por mirar el territorio y escuchar sus historias.'},
+  {id:'tomas',type:'npc',name:'Tomás',x:1320,y:930,color:'#536d4b',text:'El paisaje también guarda memoria: el río, las chacras y los caminos ayudan a entender cómo se construyó una comunidad.'}
+];
+
+export const DISCOVERY={id:'first-memory',type:'discovery',x:1040,y:520,title:'Primera huella',text:'El primer aprendizaje de Luna: una historia local no vive solamente en fechas. También vive en el territorio, sus caminos, el agua, el trabajo y las personas.'};
 export const MISSION={id:'territory-01',title:'Escuchar el territorio',objective:'Encontrá a Marta y conversá con ella.'};
