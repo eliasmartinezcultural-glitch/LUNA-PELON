@@ -1,6 +1,7 @@
 # LUNA PELÓN — PROTOCOLO DE CAMBIOS
 
 **Versión operativa:** v0.2.1
+**Última versión de producto registrada:** v0.2.0
 
 ## Identificación
 Cada avance usa una versión semántica `vMAJOR.MINOR.PATCH`.
