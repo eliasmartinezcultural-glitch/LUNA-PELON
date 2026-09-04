@@ -1,31 +1,32 @@
 # LUNA PELÓN
 
-RPG pixel-art educativo, construido desde cero para navegador.
+RPG pixel-art educativo, construido desde cero para navegador y preparado para crecer por capas.
 
 ## Versión actual
-**v0.1.2 — Runtime Safety**
+**v0.2.0 — Fundación Modular RPG**
 
-## Objetivo de esta etapa
-Construir una base resistente antes de acelerar el contenido: cambios aislados, estado protegido, validación automática, trazabilidad y rollback.
+## Qué se construyó
+La primera versión tenía demasiada responsabilidad concentrada en `main.js`. En esta etapa se separaron el estado, el motor, la entrada, el movimiento, la interacción y la persistencia.
 
-### Protección activa
-- respaldo estable de `v0.1.0`;
-- ramas de trabajo aisladas;
-- contrato del núcleo;
-- arquitectura por capas;
-- contrato de estado runtime;
-- persistencia saneada;
-- validación estructural automática;
-- historial de versiones.
+### Estructura activa
+- `src/core/state.js` — estado y saneamiento del estado.
+- `src/core/event-bus.js` — comunicación desacoplada por eventos.
+- `src/core/engine.js` — orquestación del runtime.
+- `src/systems/input.js` — teclado y controles táctiles como acciones comunes.
+- `src/systems/movement.js` — regla de movimiento.
+- `src/systems/interaction.js` — interacción y eventos de gameplay.
+- `src/systems/persistence.js` — carga y guardado seguro.
+- `src/main.js` — arranque y presentación temporal.
 
-### Núcleo funcional conservado
-- mundo y contenido declarativo;
-- Luna y movimiento;
-- teclado y controles táctiles;
-- cámara;
-- interacción, diálogo y descubrimiento;
-- misión inicial;
-- persistencia local.
+## Dirección del proyecto
+La arquitectura queda preparada para incorporar progresivamente un RPG completo: mundo explorable, interiores, colisiones, NPCs y rutinas, diálogo, misiones, inventario, objetos, economía, actividades, progresión, tiempo, clima, audio, animaciones, historia y accesibilidad.
 
-### Regla de evolución
-No se vuelve a borrar el proyecto para corregir arquitectura. Las reconstrucciones se hacen por capas, con respaldo, validación y rollback.
+## Regla para este proyecto
+No se presupone experiencia previa. Cada nueva capa tendrá un propósito claro, un dueño, conexiones explícitas, validación y una forma de comprobar que funciona.
+
+## Desarrollo seguro
+- GitHub es la fuente de verdad del código.
+- `main` se integra mediante cambios aislados y revisables.
+- Cada versión estable tiene rollback.
+- No se hacen limpiezas destructivas del repositorio.
+- El contenido histórico definitivo se incorpora sólo después de investigación y revisión de fuentes.

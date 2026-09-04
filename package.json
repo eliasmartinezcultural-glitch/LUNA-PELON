@@ -1,9 +1,7 @@
 {
   "name": "luna-pelon-core",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
-  "description": "Runtime contract and validation metadata for Luna Pelón",
-  "scripts": {
-    "check": "node scripts/validate.mjs"
-  }
+  "description": "Fundación modular del RPG Luna Pelón",
+  "scripts": { "check": "node scripts/validate.mjs" }
 }

@@ -1,40 +1,61 @@
 # LUNA PELÓN — ARQUITECTURA OPERATIVA
 
-**Versión:** v0.1.2
+**Versión:** v0.2.0
+
+La arquitectura se diseña desde ahora para soportar un RPG completo sin obligarnos a reescribir el juego cuando aparezcan inventario, NPCs, diálogos, misiones, economía, combate opcional, interiores, mapa, tiempo, clima, historia, audio, guardado, accesibilidad y contenido educativo.
 
 ```text
 src/
-├── core/       Motor, estado, contratos y ciclo de vida
-├── systems/    Movimiento, interacción, misiones, persistencia
-├── data.js     Datos declarativos del mundo y contenido
-└── main.js     Adaptador de arranque/presentación
+├── core/                 # Estado, eventos y orquestación del motor
+│   ├── engine.js
+│   ├── state.js
+│   ├── event-bus.js
+│   └── runtime-contract.js
+├── systems/              # Reglas independientes del juego
+│   ├── input.js
+│   ├── movement.js
+│   ├── interaction.js
+│   └── persistence.js
+├── data.js               # Fuente de verdad del contenido inicial
+└── main.js               # Adaptador de arranque + renderer temporal
 ```
 
-La migración es gradual: cada extracción debe conservar compatibilidad antes de retirar la implementación anterior.
+## Capas previstas del RPG
+1. **Platform:** navegador, pantalla, teclado/táctil, audio y capacidades del dispositivo.
+2. **Presentation:** renderer, cámara, HUD, menús, animaciones y feedback.
+3. **Gameplay systems:** movimiento, interacción, diálogo, misiones, inventario, economía, actividades, NPCs, tiempo/clima y progresión.
+4. **Game core:** estado, eventos, reglas de transición, ciclo de vida y contratos.
+5. **Content/data:** mundo, personajes, objetos, misiones, diálogos y contenido histórico verificable.
+6. **Persistence:** guardados, migraciones, versionado de esquema y recuperación segura.
+7. **Validation/tooling:** validadores, CI, pruebas y controles de regresión.
 
-## Flujo obligatorio
-`entrada → sistema → core/estado → persistencia → presentación`
+## Regla de dependencia
+`platform/presentation → systems → core → data contracts`
 
-La presentación lee el estado; no es dueña del progreso.
+El renderer no gobierna el estado. Los sistemas no deben depender entre sí mediante referencias rígidas cuando un evento o contrato pueda desacoplarlos. El core no importa presentación. La narrativa no debe quedar incrustada en reglas de movimiento.
 
-## Estado protegido
-`src/core/runtime-contract.js` es el propietario del esquema mínimo de runtime. Carga, sanea y limita el estado antes de que sea usado por el juego. Las futuras migraciones de guardado deben incorporarse aquí, no dispersarse en `main.js`.
+## Fuente única de verdad
+- Versión del producto: `src/data.js` por ahora.
+- Estado runtime: `src/core/state.js`.
+- Persistencia: `src/systems/persistence.js`.
+- Contrato/migración del estado: `src/core/runtime-contract.js`.
+- Coordinación: `src/core/engine.js`.
 
-## Motor adaptable
-PC y móvil son adaptadores de entrada sobre las mismas acciones lógicas. Cambiar controles, renderer o contenido no debe exigir duplicar el estado central.
+Cuando el proyecto crezca, la versión del producto deberá migrar a un manifiesto central sin duplicaciones.
 
-## Contratos mínimos
-- **GameState:** posición, progreso y datos persistentes.
-- **Input:** acciones abstractas.
-- **World:** geometría y entidades declarativas.
-- **Systems:** reglas que transforman estado.
-- **Persistence:** serialización, carga y migración.
-- **Renderer:** lectura del estado y presentación.
+## Principios profesionales aplicados
+- Separación de datos y lógica.
+- Responsabilidad única por módulo.
+- Composición antes que una clase/archivo gigante.
+- Comunicación por eventos para reducir acoplamiento.
+- Sistemas independientes de la presentación.
+- Datos declarativos para que el contenido pueda crecer sin reescribir el motor.
+- Guardados saneados y migrables.
+- Compatibilidad móvil desde el diseño, no como parche final.
+- Validación automática antes de integrar.
 
-## Dirección de dependencias
-`main → core + data`
-
-El core no importa el renderer. Los datos no importan el renderer. La persistencia no contiene narrativa. Evitar ciclos.
+## Importante para un primer videojuego
+No se presupone conocimiento previo. Cada sistema nuevo debe tener: propósito, entrada, salida, dueño del estado, conexión con el motor, forma de probarlo y criterio para considerarlo terminado.
 
 ## Regla de refactor
-Primero se conecta el reemplazo. Después se verifica. Solo entonces se retira código duplicado. Nunca al revés.
+Conectar → validar → probar → documentar → retirar duplicado. Nunca retirar primero.
