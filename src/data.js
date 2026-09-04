@@ -39,6 +39,6 @@ export const MISSION={
     {id:'meet-marta',event:'dialogue:line',entityId:'marta',nodeId:'welcome',label:'Hablar con Marta'},
     {id:'learn-territory',event:'dialogue:line',entityId:'marta',nodeId:'territory',label:'Escuchar la historia del territorio'},
     {id:'discover-memory',event:'history:discovered',entityId:'first-memory',label:'Encontrar la primera memoria'},
-    {id:'return-marta',event:'dialogue:line',entityId:'marta',nodeId:'task',label:'Volver con Marta'}
+    {id:'return-marta',event:'entity:interacted',entityId:'marta',label:'Volver con Marta'}
   ]
 };
