@@ -1,7 +1,7 @@
 # LUNA PELÓN — CONTRATO DEL NÚCLEO
 
-**Versión:** v0.3.0
-**Estado:** FUNDACIÓN DEL MUNDO RPG
+**Versión:** v0.3.1
+**Estado:** HARDENING DEL NÚCLEO + PREPARACIÓN DEL MUNDO
 
 ## Reglas de mando
 1. `main` es estable. Toda funcionalidad experimental nace en una rama aislada.
@@ -16,6 +16,8 @@
 10. PC y móvil utilizan las mismas acciones lógicas.
 11. El contenido histórico definitivo requiere fuentes revisadas.
 12. Una versión no se considera terminada sólo porque compile: debe arrancar y conservar sus conexiones.
+13. Los contratos críticos deben tener pruebas ejecutables, no sólo comprobaciones de texto.
+14. Un sistema retirado debe desaparecer de imports, referencias y documentación antes de considerar cerrada la refactorización.
 
 ## Puerta de entrada
 - estructura íntegra;
@@ -32,6 +34,7 @@
 - versión coherente;
 - documentación actualizada;
 - validación automática;
+- pruebas de contratos ejecutadas;
 - ejecución real cuando el entorno lo permita;
 - rollback disponible.
 
