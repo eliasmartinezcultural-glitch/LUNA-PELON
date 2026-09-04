@@ -1,7 +1,7 @@
 # LUNA PELÓN — PROTOCOLO DE CAMBIOS
 
-**Versión operativa:** v0.7.0  
-**Última versión de producto registrada:** v0.7.0
+**Versión operativa:** v0.8.0  
+**Última versión de producto registrada:** v0.8.0
 
 ## Identificación
 Cada avance usa `vMAJOR.MINOR.PATCH`.
@@ -25,8 +25,8 @@ Cada avance usa `vMAJOR.MINOR.PATCH`.
 ## GitHub ↔ Vercel
 GitHub es la fuente de verdad del código. Vercel es despliegue/preview. Una publicación no reemplaza la validación del repositorio ni una prueba de ejecución cuando esté disponible.
 
-## v0.7.0
-La capa narrativa incorpora diálogo declarativo, memoria de encuentros e historial acotado. Las consecuencias de conversación se comunican mediante eventos, manteniendo desacoplados contenido, engine y presentación.
+## v0.8.0
+El sistema de misiones convierte hechos de gameplay en progreso persistente. Los pasos son declarativos y pueden reaccionar a diálogo, descubrimientos e interacciones sin incrustar contenido específico en el engine.
 
 ## Rollback
 Ante una regresión crítica, volver al último commit estable. Nunca forzar integración sólo para conservar trabajo reciente.

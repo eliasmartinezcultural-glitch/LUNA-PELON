@@ -1,7 +1,7 @@
 # LUNA PELÓN — CONTRATO DEL NÚCLEO
 
-**Versión:** v0.7.0  
-**Estado:** DIÁLOGO + MEMORIA NARRATIVA
+**Versión:** v0.8.0  
+**Estado:** MISIONES + PROGRESIÓN POR EVENTOS
 
 ## Reglas de mando
 1. `main` es estable. Toda funcionalidad experimental nace en una rama aislada.
@@ -26,9 +26,12 @@
 20. El reloj es independiente del renderizado y determinista.
 21. El diálogo es contenido declarativo: no se incrusta narrativa específica en el engine.
 22. La memoria narrativa persistida se sanea y tiene límites de tamaño.
+23. Una misión declara sus pasos en datos; no se codifica una misión concreta dentro del engine.
+24. El diálogo emite hechos narrativos; el sistema de misiones decide el progreso.
+25. El progreso de misión es persistente, saneado y acotado.
 
 ## Puerta de entrada
-Estructura íntegra, imports válidos, sintaxis válida, entrypoint correcto, persistencia segura, controles PC/móvil, conexiones core/sistemas, mundo data-driven, presentación separada, colisión estática/dinámica, transitabilidad, navegación, rutinas NPC, reloj, diálogo, memoria narrativa, ausencia de referencias muertas, versión coherente, documentación, validación, pruebas y rollback.
+Estructura íntegra, imports válidos, sintaxis válida, entrypoint correcto, persistencia segura, controles PC/móvil, conexiones core/sistemas, mundo data-driven, presentación separada, colisión estática/dinámica, transitabilidad, navegación, rutinas NPC, reloj, diálogo, memoria narrativa, misiones por eventos, progreso persistente, ausencia de referencias muertas, versión coherente, documentación, validación, pruebas y rollback.
 
 ## Prohibición
 No hacer limpiezas destructivas para "empezar de nuevo". Se construye por capas y con respaldo.

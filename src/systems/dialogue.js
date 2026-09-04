@@ -27,10 +27,6 @@ export function createDialogueSystem({ state, events, save, show }) {
 
     show(`${entity.name}: ${node.text}`);
     events.emit('dialogue:line', { entityId: entity.id, nodeId: node.id, encounter: previous + 1 });
-    if (node.missionComplete) {
-      state.done = true;
-      events.emit('mission:completed', { missionId: state.missionId, actorId: entity.id });
-    }
     save();
     return true;
   }

@@ -3,13 +3,13 @@
 RPG pixel-art educativo, construido desde cero para navegador y preparado para crecer por capas.
 
 ## Versión actual
-**v0.7.0 — Diálogo + memoria narrativa**
+**v0.8.0 — Misiones + progresión por eventos**
 
 ## Qué está construido
-La estructura separa estado, eventos, motor, entrada, colisión, transitabilidad, navegación, comportamiento de NPCs, reloj, diálogo, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
+La estructura separa estado, eventos, motor, entrada, colisión, transitabilidad, navegación, comportamiento de NPCs, reloj, diálogo, misiones, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
 
 ### Estructura activa
-- `src/core/state.js` — estado, saneamiento, identidad estable y memoria narrativa.
+- `src/core/state.js` — estado, saneamiento, identidad estable, memoria narrativa y progreso.
 - `src/core/event-bus.js` — comunicación desacoplada por eventos.
 - `src/core/engine.js` — orquestación del runtime.
 - `src/core/world.js` — modelo lógico del territorio y superficies.
@@ -20,18 +20,18 @@ La estructura separa estado, eventos, motor, entrada, colisión, transitabilidad
 - `src/systems/navigation.js` — rutas deterministas.
 - `src/systems/npc.js` — rutinas y movimiento autónomo.
 - `src/systems/time.js` — reloj independiente del renderizado.
-- `src/systems/dialogue.js` — conversaciones declarativas y consecuencias.
+- `src/systems/dialogue.js` — conversaciones declarativas y eventos narrativos.
+- `src/systems/mission.js` — objetivos, pasos, filtros, progreso y finalización.
 - `src/systems/interaction.js` — interacción basada en entidades.
 - `src/systems/persistence.js` — guardado seguro y saneado.
 - `src/presentation/world-renderer.js` — presentación desde datos.
-- `src/main.js` — composición y ciclo principal.
+- `src/main.js` — composición, ciclo y HUD de objetivo.
 - `tests/core-contract.test.mjs` — contratos ejecutables.
 
-## v0.7.0
-Luna puede iniciar conversaciones con NPCs que tienen líneas declaradas en datos. Las conversaciones avanzan por interacción, registran encuentros e historial reciente y pueden emitir consecuencias de misión sin acoplar narrativa al motor de movimiento.
+## v0.8.0
+Las misiones son declarativas: cada una define pasos y eventos capaces de completarlos. El diálogo emite hechos; la misión decide si ese hecho corresponde al objetivo activo. El progreso queda guardado y el HUD muestra dinámicamente el siguiente objetivo.
 
-## Próxima etapa
-v0.8: misiones como sistema independiente, objetivos, estados y consecuencias persistentes, reutilizando eventos, diálogo, entidades y memoria.
+La misión inicial de Luna recorre cuatro estados: conocer a Marta → escuchar su explicación → encontrar la primera memoria → regresar con Marta.
 
 ## Comprobación local
 - `npm test` — ejecuta las pruebas del núcleo.

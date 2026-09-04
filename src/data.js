@@ -1,4 +1,4 @@
-export const VERSION='v0.7.0';
+export const VERSION='v0.8.0';
 
 export const WORLD={
   width:2400,height:1500,spawn:{x:360,y:760},river:{x:1810,width:220},bridge:{x:1690,y:650,w:460,h:100},
@@ -13,21 +13,32 @@ export const WORLD={
 export const NPCS=[
   {id:'marta',type:'npc',name:'Marta',x:760,y:690,color:'#9b5b43',radius:14,collidable:true,interactable:true,speed:62,
     dialogue:[
-      {id:'welcome',text:'Hola, Luna. Si querés conocer Villa Pelón, empecemos por algo simple: mirar y escuchar.',missionComplete:false},
-      {id:'territory',text:'El territorio cuenta historias. El agua, las chacras y los caminos hablan tanto como los documentos.',missionComplete:false},
-      {id:'task',text:'Tu primera tarea es recorrer con atención. Cuando encuentres una memoria, volvé a hablar conmigo.',missionComplete:true}
+      {id:'welcome',text:'Hola, Luna. Si querés conocer Villa Pelón, empecemos por algo simple: mirar y escuchar.'},
+      {id:'territory',text:'El territorio cuenta historias. El agua, las chacras y los caminos hablan tanto como los documentos.'},
+      {id:'task',text:'Tu primera tarea es recorrer con atención. Cuando encuentres una memoria, volvé a hablar conmigo.'}
     ],
     text:'Hola, Luna. Si querés conocer Villa Pelón, empezá por mirar el territorio y escuchar sus historias.',
     schedule:[{start:0,target:'point:martaHome',state:'resting'},{start:8*60,target:'point:communityCenter',state:'working'},{start:13*60,target:'point:martaHome',state:'resting'},{start:17*60,target:'point:communityCenter',state:'talking'},{start:21*60,target:'point:martaHome',state:'resting'}]},
   {id:'tomas',type:'npc',name:'Tomás',x:1320,y:930,color:'#536d4b',radius:14,collidable:true,interactable:true,speed:68,
     dialogue:[
-      {id:'intro',text:'Buenas, Luna. Por acá se aprende caminando.',missionComplete:false},
-      {id:'landscape',text:'El paisaje también guarda memoria: río, chacras y caminos ayudan a entender cómo se construyó una comunidad.',missionComplete:false},
-      {id:'question',text:'Prestá atención a los lugares y a las personas. Después vas a poder unir las historias.',missionComplete:false}
+      {id:'intro',text:'Buenas, Luna. Por acá se aprende caminando.'},
+      {id:'landscape',text:'El paisaje también guarda memoria: río, chacras y caminos ayudan a entender cómo se construyó una comunidad.'},
+      {id:'question',text:'Prestá atención a los lugares y a las personas. Después vas a poder unir las historias.'}
     ],
     text:'El paisaje también guarda memoria: el río, las chacras y los caminos ayudan a entender cómo se construyó una comunidad.',
     schedule:[{start:0,target:'point:martaHome',state:'resting'},{start:7*60,target:'point:orchardWest',state:'working'},{start:14*60,target:'point:bridgeWest',state:'walking'},{start:18*60,target:'point:communityCenter',state:'talking'},{start:22*60,target:'point:martaHome',state:'resting'}]}
 ];
 
 export const DISCOVERY={id:'first-memory',type:'discovery',x:1040,y:520,title:'Primera huella',interactable:true,collidable:false,text:'El primer aprendizaje de Luna: una historia local no vive solamente en fechas. También vive en el territorio, sus caminos, el agua, el trabajo y las personas.'};
-export const MISSION={id:'territory-01',title:'Escuchar el territorio',objective:'Encontrá a Marta, conversá con ella y explorá la primera memoria.'};
+
+export const MISSION={
+  id:'territory-01',
+  title:'Escuchar el territorio',
+  objective:'Encontrá a Marta, conversá con ella y explorá la primera memoria.',
+  steps:[
+    {id:'meet-marta',event:'dialogue:line',entityId:'marta',nodeId:'welcome',label:'Hablar con Marta'},
+    {id:'learn-territory',event:'dialogue:line',entityId:'marta',nodeId:'territory',label:'Escuchar la historia del territorio'},
+    {id:'discover-memory',event:'history:discovered',entityId:'first-memory',label:'Encontrar la primera memoria'},
+    {id:'return-marta',event:'entity:interacted',entityId:'marta',label:'Volver con Marta'}
+  ]
+};
