@@ -15,9 +15,15 @@ export function createWorldRenderer(ctx, world, entityRegistry, getPlayerState) 
         ctx.fillRect(x - camX, y - camY, tile + 1, tile + 1);
       }
     }
+
     drawRect({ x: world.river.x, y: -100, width: world.river.width, height: world.height + 300 }, camX, camY, '#5f9fb2');
+    for (let y = 0; y < world.height; y += 32) drawRect({ x: world.river.x + 12, y, width: world.river.width - 24, height: 2 }, camX, camY, '#75b3c1');
     for (const road of world.roads ?? []) drawRect(road, camX, camY, road.kind === 'bridge' ? '#d0ae79' : '#b99a6d');
-    for (const farm of world.farms ?? []) drawRect(farm, camX, camY, '#6f8c52');
+    for (const farm of world.farms ?? []) {
+      drawRect(farm, camX, camY, '#6f8c52');
+      for (let x = farm.x + 20; x < farm.x + farm.width; x += 42) drawRect({ x, y: farm.y + 16, width: 3, height: farm.height - 32 }, camX, camY, '#829d60');
+    }
+
     for (const building of world.buildings ?? []) {
       drawRect(building, camX, camY, '#6b4a32');
       ctx.fillStyle = building.roof ?? '#9c5b42';
@@ -26,7 +32,12 @@ export function createWorldRenderer(ctx, world, entityRegistry, getPlayerState) 
       ctx.lineTo(building.x - camX + building.width / 2, building.y - camY - 38);
       ctx.lineTo(building.x - camX + building.width + 8, building.y - camY);
       ctx.fill();
+      ctx.fillStyle = '#f5eed9';
+      ctx.font = '11px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(building.name ?? building.id, building.x - camX + building.width / 2, building.y - camY + building.height + 18);
     }
+
     for (const npc of entityRegistry.all().filter((entity) => entity.type === 'npc')) {
       ctx.fillStyle = npc.color ?? '#536d4b';
       ctx.fillRect(npc.x - camX - 13, npc.y - camY - 20, 26, 34);
@@ -37,6 +48,7 @@ export function createWorldRenderer(ctx, world, entityRegistry, getPlayerState) 
       ctx.textAlign = 'center';
       ctx.fillText(npc.name, npc.x - camX, npc.y - camY - 44);
     }
+
     const player = getPlayerState();
     ctx.fillStyle = '#28486b';
     ctx.fillRect(player.x - camX - 14, player.y - camY - 22, 28, 38);
@@ -45,6 +57,7 @@ export function createWorldRenderer(ctx, world, entityRegistry, getPlayerState) 
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 11px system-ui';
     ctx.fillText('LUNA', player.x - camX, player.y - camY - 47);
+
     const discovery = entityRegistry.all().find((entity) => entity.type === 'discovery');
     if (discovery) {
       ctx.fillStyle = player.seen ? '#777' : '#e7d39c';
