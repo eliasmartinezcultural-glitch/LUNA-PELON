@@ -19,12 +19,7 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
   const initial = createGameState(world, mission);
   const state = { ...initial, ...(loadState(storage, world, mission, sanitizeGameState) ?? {}) };
   const points = Object.entries(world.points ?? {}).map(([id, point]) => ({
-    id: `point:${id}`,
-    type: 'landmark',
-    x: point.x,
-    y: point.y,
-    collidable: false,
-    interactable: false,
+    id: `point:${id}`, type: 'landmark', x: point.x, y: point.y, collidable: false, interactable: false,
   }));
   const registry = createEntityRegistry([
     { id: state.playerId, type: 'player', x: state.x, y: state.y, interactable: false, collidable: false, radius: 14 },
@@ -45,10 +40,7 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
     navigation,
     getTimeMinutes: clock.getMinutes,
     moveEntity: (entity, direction, dt, speed) => moveWithCollision(
-      entity,
-      direction,
-      worldModel,
-      dt,
+      entity, direction, worldModel, dt,
       speed * getMovementModifier(getSurfaceAt(worldModel, entity.x, entity.y)),
       entity.radius ?? 14,
       registry.all().filter((other) => other.id !== entity.id && other.collidable !== false),
@@ -56,7 +48,7 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
   });
 
   function update(dt) {
-    clock.update(dt * 60);
+    clock.update(dt);
     const direction = input.getVector();
     const surface = getSurfaceAt(worldModel, state.x, state.y);
     const speed = 230 * getMovementModifier(surface);
@@ -81,17 +73,5 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
     events.clear();
   }
 
-  return {
-    state,
-    world: worldModel,
-    entities: registry,
-    input,
-    events,
-    clock,
-    npcSystem,
-    interact: interaction.interact,
-    update,
-    save,
-    destroy,
-  };
+  return { state, world: worldModel, entities: registry, input, events, clock, npcSystem, interact: interaction.interact, update, save, destroy };
 }
