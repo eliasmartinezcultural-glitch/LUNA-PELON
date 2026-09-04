@@ -1,13 +1,13 @@
 # LUNA PELÓN — ARQUITECTURA OPERATIVA
 
-**Versión:** v0.7.0
+**Versión:** v0.8.0
 
-La arquitectura soporta un RPG territorial creciente sin reescribir el motor para cada personaje, lugar o misión.
+La arquitectura soporta un RPG territorial creciente sin reescribir el motor para cada personaje, lugar, misión u objeto.
 
 ```text
 src/
 ├── core/       # estado, eventos, mundo, entidades, engine
-├── systems/    # input, colisión, tránsito, interacción, navegación, NPC, tiempo, diálogo, persistencia
+├── systems/    # input, colisión, tránsito, interacción, navegación, NPC, tiempo, diálogo, misiones, persistencia
 ├── presentation/ # renderer
 ├── data.js     # contenido declarativo
 └── main.js     # composición y ciclo
@@ -15,15 +15,19 @@ src/
 tests/          # contratos ejecutables
 ```
 
-## v0.7.0 — Diálogo + memoria narrativa
-El diálogo pasa a ser un sistema independiente. Cada NPC puede declarar una secuencia de líneas mediante datos, mientras el sistema controla el avance de la conversación y emite eventos de gameplay.
+## v0.8.0 — Misiones + progresión por eventos
+Las misiones pasan a ser un sistema independiente. Una misión declara pasos, eventos que los completan y filtros opcionales por entidad o nodo narrativo.
 
-La partida conserva una memoria narrativa acotada: cantidad de encuentros por entidad e historial reciente de líneas vistas. El estado persistido se sanea antes de entrar al runtime y queda limitado para evitar crecimiento indefinido.
+El flujo queda desacoplado:
 
-La conversación puede producir consecuencias de gameplay sin que el renderer, la navegación o el NPC tengan que conocer reglas narrativas específicas.
+`contenido → evento → misión → progreso persistente → HUD`
+
+El diálogo ya no decide si una misión termina. Emite hechos narrativos; el sistema de misiones determina si ese hecho corresponde al paso activo. Esto evita que personajes concretos queden codificados dentro del engine.
+
+El progreso persistente conserva estado activo/completado, índice del paso y lista acotada de pasos realizados. Los guardados antiguos se aceptan mediante saneamiento y reciben la estructura nueva sin depender de código narrativo específico.
 
 ## Regla de expansión
-Para agregar personajes, conversaciones o misiones se priorizan datos y contratos. El engine no debe necesitar un `if` nuevo por cada personaje.
+Para agregar personajes, conversaciones, misiones o futuras actividades se priorizan datos y contratos. El engine no debe necesitar un `if` nuevo por cada contenido.
 
 ## Capas previstas
 1. Platform: navegador, pantalla, teclado/táctil, audio.
@@ -37,7 +41,7 @@ Para agregar personajes, conversaciones o misiones se priorizan datos y contrato
 ## Regla de dependencia
 `platform/presentation → systems → core → data contracts`
 
-El renderer no gobierna el estado. La narrativa no queda incrustada en movimiento. Los sistemas ejecutan reglas y los datos describen contenido.
+El renderer no gobierna el estado. La narrativa no queda incrustada en movimiento. Las misiones reaccionan a eventos y no conocen detalles de presentación.
 
 ## Refactor
 Conectar → validar → probar → documentar → retirar duplicado.
