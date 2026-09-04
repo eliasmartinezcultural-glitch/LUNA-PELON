@@ -1,6 +1,6 @@
 # LUNA PELÓN — ARQUITECTURA OPERATIVA
 
-**Versión:** v0.5.0
+**Versión:** v0.6.0
 
 La arquitectura se diseña para soportar un RPG completo sin obligarnos a reescribir el juego cuando aparezcan interiores, NPCs, diálogos, misiones, inventario, economía, actividades, tiempo, clima, historia, audio, accesibilidad y contenido educativo.
 
@@ -19,6 +19,9 @@ src/
 │   ├── transitability.js     # Superficie y reglas de tránsito
 │   ├── spatial.js            # Consultas espaciales
 │   ├── interaction.js        # Interacciones por entidades
+│   ├── navigation.js         # Rutas deterministas
+│   ├── npc.js                # Rutinas y estados de NPCs
+│   ├── time.js               # Reloj del mundo
 │   └── persistence.js        # Carga y guardado
 ├── presentation/
 │   └── world-renderer.js     # Presentación del mundo desde datos
@@ -29,19 +32,17 @@ tests/
 └── core-contract.test.mjs    # Pruebas ejecutables del núcleo
 ```
 
-## v0.5.0 — Living Entities + Transitability
-El runtime deja de tratar NPCs y puntos interactivos como listas especiales. Existe un registro común de entidades con IDs estables. Luna tiene una identidad persistente (`player`) y su posición se sincroniza con el registro durante el juego.
+## v0.6.0 — Living World + NPC Navigation
+Los NPCs tienen ahora rutinas declarativas con destinos, horarios, estados y velocidad. El sistema de NPC decide cuándo moverse; navegación se limita a calcular rutas y colisión aplica las reglas físicas.
 
-Las interacciones consultan el registro, por lo que futuras conversaciones, objetos, puertas, personajes y lugares pueden incorporarse sin crear un sistema paralelo por tipo.
+El reloj del mundo avanza de manera independiente del renderizado. Esto permite que actividades futuras dependan de una hora común sin acoplarlas al frame rate.
 
-La colisión ahora distingue entre geometría estática y entidades dinámicas. Los NPCs pueden ser obstáculos físicos sin convertirse en parte de la lógica del renderer.
-
-La transitabilidad introduce una capa semántica: terreno, camino, chacra, río y puente son superficies del mundo. La velocidad puede depender de la superficie y el motor recibe esa información como regla, no como efecto visual.
+Los destinos de rutina son landmarks registrados como entidades. Esto evita crear una arquitectura distinta para cada vivienda, trabajo, plaza, comercio o punto de interés.
 
 ## Regla de expansión
 Para agregar una nueva entidad, primero se intenta definir sus datos y contrato. El engine no debe necesitar un `if` nuevo por cada NPC, objeto o lugar.
 
-Para agregar una nueva superficie, se modifica el modelo de mundo y sus reglas de tránsito; el renderer no se convierte en autoridad física.
+Para agregar una nueva conducta, se agregan datos y reglas al sistema correspondiente, manteniendo navegación, colisión y presentación desacopladas.
 
 ## Capas previstas del RPG
 1. **Platform:** navegador, pantalla, teclado/táctil, audio y capacidades del dispositivo.
