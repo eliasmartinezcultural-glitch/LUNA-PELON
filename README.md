@@ -3,10 +3,10 @@
 RPG pixel-art educativo, construido desde cero para navegador y preparado para crecer por capas.
 
 ## Versión actual
-**v0.5.0 — Living Entities + Transitability**
+**v0.6.0 — Living World + NPC Navigation**
 
 ## Qué está construido
-La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se separaron estado, eventos, motor, entrada, colisión, transitabilidad, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
+La estructura separa estado, eventos, motor, entrada, colisión, transitabilidad, navegación, comportamiento de NPCs, reloj, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
 
 ### Estructura activa
 - `src/core/state.js` — estado, saneamiento e identidad estable de Luna.
@@ -17,6 +17,9 @@ La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se sep
 - `src/systems/input.js` — teclado y controles táctiles como acciones comunes.
 - `src/systems/collision.js` — ocupación estática y dinámica.
 - `src/systems/transitability.js` — terreno, caminos, chacras, río, puente y modificadores de movimiento.
+- `src/systems/navigation.js` — búsqueda de rutas determinista sobre una cuadrícula.
+- `src/systems/npc.js` — rutinas, estados y movimiento autónomo de NPCs.
+- `src/systems/time.js` — reloj del mundo independiente del renderizado.
 - `src/systems/spatial.js` — consultas por proximidad e identidad.
 - `src/systems/interaction.js` — interacción basada en entidades y eventos.
 - `src/systems/persistence.js` — carga y guardado seguro.
@@ -24,13 +27,13 @@ La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se sep
 - `src/main.js` — composición y ciclo principal.
 - `tests/core-contract.test.mjs` — pruebas ejecutables de contratos críticos.
 
-## v0.5.0
-Luna, los NPCs y los puntos interactivos comparten ahora un registro de entidades. Esto prepara el juego para incorporar objetos, puertas, comerciantes, animales y otros actores sin crear una arquitectura distinta para cada categoría.
+## v0.6.0
+Los NPCs dejan de ser únicamente elementos estáticos: tienen destinos definidos por datos, estados de actividad, velocidad y rutinas horarias. La navegación está aislada del comportamiento y utiliza el mismo modelo de colisión del jugador.
 
-El mundo también tiene una capa semántica de transitabilidad. Una superficie puede ser camino, puente, chacra, terreno o río, y esa clasificación puede influir en las reglas de movimiento independientemente de cómo se dibuje.
+El reloj del mundo permite que el territorio evolucione sin atar la lógica de simulación al renderizado. Los destinos de rutina se representan como entidades de tipo `landmark`, por lo que la arquitectura puede crecer hacia trabajos, viviendas, comercios, puertas, animales y actividades.
 
 ## Próxima etapa
-La siguiente capa será navegación y comportamiento básico de NPCs: destinos, rutinas, estados de actividad y movimiento autónomo, manteniendo el mismo registro de entidades y el mismo sistema de eventos.
+v0.7: diálogo como sistema de contenido, memoria/historial de encuentros y primeras consecuencias de misión, sin mezclar narrativa con renderizado ni movimiento.
 
 ## Comprobación local
 - `npm test` — ejecuta las pruebas del núcleo.
