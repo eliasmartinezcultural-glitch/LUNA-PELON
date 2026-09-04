@@ -1,4 +1,6 @@
-export const VERSION='v0.8.0';
+import { MEMORIES } from './content/memories.js';
+
+export const VERSION='v0.9.0';
 
 export const WORLD={
   width:2400,height:1500,spawn:{x:360,y:760},river:{x:1810,width:220},bridge:{x:1690,y:650,w:460,h:100},
@@ -29,7 +31,7 @@ export const NPCS=[
     schedule:[{start:0,target:'point:martaHome',state:'resting'},{start:7*60,target:'point:orchardWest',state:'working'},{start:14*60,target:'point:bridgeWest',state:'walking'},{start:18*60,target:'point:communityCenter',state:'talking'},{start:22*60,target:'point:martaHome',state:'resting'}]}
 ];
 
-export const DISCOVERY={id:'first-memory',type:'discovery',x:1040,y:520,title:'Primera huella',interactable:true,collidable:false,text:'El primer aprendizaje de Luna: una historia local no vive solamente en fechas. También vive en el territorio, sus caminos, el agua, el trabajo y las personas.'};
+export const DISCOVERY={...MEMORIES[0],x:1040,y:520,interactable:true,collidable:false,type:'discovery'};
 
 export const MISSION={
   id:'territory-01',
