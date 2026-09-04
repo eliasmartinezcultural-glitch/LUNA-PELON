@@ -2,7 +2,7 @@ name: Core Validation
 
 on:
   push:
-    branches: [main, 'core/**', 'world/**']
+    branches: [main, 'core/**', 'world/**', 'gameplay/**']
   pull_request:
     branches: [main]
 
