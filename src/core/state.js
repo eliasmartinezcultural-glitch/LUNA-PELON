@@ -1,10 +1,11 @@
-export const GAME_SCHEMA_VERSION = 3;
+export const GAME_SCHEMA_VERSION = 4;
 export const PLAYER_ENTITY_ID = 'player';
 
 export function createGameState(world, mission) {
   return {
     schema: GAME_SCHEMA_VERSION,
     playerId: PLAYER_ENTITY_ID,
+    currentLocationId: 'outside',
     x: world.spawn.x,
     y: world.spawn.y,
     done: false,
@@ -20,6 +21,7 @@ export function sanitizeGameState(raw, world, mission) {
   if (!raw || typeof raw !== 'object') return fallback;
   const x = Number(raw.x);
   const y = Number(raw.y);
+  const currentLocationId = raw.currentLocationId === 'outside' ? 'outside' : fallback.currentLocationId;
   const rawDialogue = raw.dialogue && typeof raw.dialogue === 'object' ? raw.dialogue : {};
   const rawEncounters = rawDialogue.encounters && typeof rawDialogue.encounters === 'object' ? rawDialogue.encounters : {};
   const rawHistory = Array.isArray(rawDialogue.history) ? rawDialogue.history : [];
@@ -33,6 +35,7 @@ export function sanitizeGameState(raw, world, mission) {
   return {
     schema: GAME_SCHEMA_VERSION,
     playerId: PLAYER_ENTITY_ID,
+    currentLocationId,
     x: Number.isFinite(x) ? Math.max(30, Math.min(world.width - 30, x)) : fallback.x,
     y: Number.isFinite(y) ? Math.max(90, Math.min(world.height - 30, y)) : fallback.y,
     done: completedMission,
