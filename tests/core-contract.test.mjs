@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { VERSION, WORLD, NPCS, DISCOVERY } from '../src/data.js';
+import { VERSION, WORLD, NPCS, DISCOVERY, MISSION } from '../src/data.js';
 import { createGameState, sanitizeGameState, GAME_SCHEMA_VERSION, PLAYER_ENTITY_ID } from '../src/core/state.js';
 import { createWorldModel, getZoneAt } from '../src/core/world.js';
 import { createEntityRegistry } from '../src/core/entity.js';
@@ -12,23 +12,28 @@ import { createNavigationSystem } from '../src/systems/navigation.js';
 import { createNpcSystem } from '../src/systems/npc.js';
 import { createWorldClock } from '../src/systems/time.js';
 import { createDialogueSystem } from '../src/systems/dialogue.js';
+import { createMissionSystem } from '../src/systems/mission.js';
 
 const world = { width: 1000, height: 800, spawn: { x: 100, y: 100 }, zones: [{ id: 'town', name: 'Villa Pelón', x: 50, y: 50, width: 400, height: 300 }], roads: [{ id: 'road', x: 50, y: 180, width: 400, height: 40, kind: 'road' }], farms: [{ id: 'farm', x: 50, y: 300, width: 200, height: 200 }], buildings: [{ id: 'house', x: 300, y: 250, width: 100, height: 100 }], river: { x: 600, width: 100 }, bridge: { x: 550, y: 360, w: 200, h: 40 }, obstacles: [{ id: 'wall', x: 200, y: 100, width: 100, height: 100 }] };
 
-test('release data exposes the living-world and dialogue foundation', () => {
-  assert.equal(VERSION, 'v0.7.0');
+test('release data exposes the v0.8 mission foundation', () => {
+  assert.equal(VERSION, 'v0.8.0');
   assert.ok(WORLD.zones.length >= 4 && WORLD.roads.length >= 3 && WORLD.farms.length >= 3 && WORLD.buildings.length >= 3);
   assert.ok(NPCS.every((npc) => Array.isArray(npc.schedule) && npc.schedule.length > 0 && Array.isArray(npc.dialogue)));
   assert.equal(DISCOVERY.type, 'discovery');
+  assert.equal(MISSION.steps.length, 4);
+  assert.deepEqual(MISSION.steps.map((step) => step.id), ['meet-marta', 'learn-territory', 'discover-memory', 'return-marta']);
 });
 
-test('state has stable identity and bounded dialogue memory', () => {
+test('state has stable identity, mission progress and bounded dialogue memory', () => {
   const state = createGameState(world, { id: 'm1' });
   assert.equal(state.schema, GAME_SCHEMA_VERSION);
   assert.equal(state.playerId, PLAYER_ENTITY_ID);
+  assert.deepEqual(state.mission, { id: 'm1', status: 'active', currentStep: 0, completed: [] });
   assert.deepEqual(state.dialogue, { encounters: {}, history: [] });
-  const clean = sanitizeGameState({ x: -999, y: 9999, done: 'yes', seen: 'no', dialogue: { encounters: { marta: 2, bad: -1 }, history: [{ entityId: 'marta', nodeId: 'welcome', encounter: 2 }, { nope: true }] } }, world, { id: 'm1' });
+  const clean = sanitizeGameState({ x: -999, y: 9999, done: 'yes', seen: 'no', mission: { currentStep: 99, completed: ['a', 2] }, dialogue: { encounters: { marta: 2, bad: -1 }, history: [{ entityId: 'marta', nodeId: 'welcome', encounter: 2 }, { nope: true }] } }, world, { id: 'm1' });
   assert.equal(clean.x, 30); assert.equal(clean.y, 770); assert.equal(clean.done, false); assert.equal(clean.seen, false);
+  assert.equal(clean.mission.currentStep, 99); assert.deepEqual(clean.mission.completed, ['a']);
   assert.deepEqual(clean.dialogue.encounters, { marta: 2 });
   assert.equal(clean.dialogue.history.length, 1);
 });
@@ -52,9 +57,27 @@ test('NPC system follows a scheduled landmark', () => { const registry = createE
 test('world clock wraps cleanly', () => { const clock = createWorldClock({ startMinutes: 1439, timeScale: 1 }); clock.update(2); assert.equal(clock.getMinutes(), 1); assert.equal(clock.getLabel(), '00:01'); });
 test('spatial queries return nearest relevant entities', () => { const entities = [{ id: 'near', x: 110, y: 100 }, { id: 'far', x: 500, y: 500 }]; assert.equal(findNearby({ x: 100, y: 100 }, entities, 50)[0].id, 'near'); assert.equal(findById(entities, 'far').id, 'far'); });
 
-test('dialogue advances, remembers encounters and emits gameplay events', () => {
-  const state = createGameState(world, { id: 'm1' }); const registry = createEntityRegistry([{ id: 'marta', type: 'npc', name: 'Marta', dialogue: [{ id: 'a', text: 'Uno', missionComplete: false }, { id: 'b', text: 'Dos', missionComplete: true }] }]);
-  const events = []; const dialogue = createDialogueSystem({ state, events: { emit: (name, payload) => events.push({ name, payload }) }, save: () => {}, show: (text) => events.push({ name: 'show', text }) });
+test('dialogue advances and emits lines without owning mission completion', () => {
+  const state = createGameState(world, { id: 'm1' }); const registry = createEntityRegistry([{ id: 'marta', type: 'npc', name: 'Marta', dialogue: [{ id: 'a', text: 'Uno' }, { id: 'b', text: 'Dos' }] }]);
+  const events = []; const dialogue = createDialogueSystem({ state, events: { emit: (name, payload) => events.push({ name, payload }) }, save: () => {}, show: () => {} });
   dialogue.start(registry.get('marta')); dialogue.start(registry.get('marta'));
-  assert.equal(state.dialogue.encounters.marta, 2); assert.equal(state.dialogue.history.length, 2); assert.equal(state.done, true); assert.equal(events.filter((event) => event.name === 'dialogue:line').length, 2); assert.equal(events.some((event) => event.name === 'mission:completed'), true);
+  assert.equal(state.dialogue.encounters.marta, 2); assert.equal(state.dialogue.history.length, 2); assert.equal(state.done, false); assert.equal(events.filter((event) => event.name === 'dialogue:line').length, 2);
+});
+
+test('mission advances only when the active step matches the event', () => {
+  const state = createGameState(world, { id: 'm1' });
+  const listeners = new Map();
+  const events = { on: (name, handler) => { listeners.set(name, handler); return () => listeners.delete(name); }, emit: (name, payload) => listeners.get(name)?.(payload) };
+  const mission = createMissionSystem({ state, mission: { id: 'm1', title: 'Test', steps: [
+    { id: 'a', event: 'dialogue:line', entityId: 'marta', nodeId: 'welcome' },
+    { id: 'b', event: 'history:discovered', entityId: 'memory' },
+  ] }, events, save: () => {}, show: () => {} });
+  events.emit('dialogue:line', { entityId: 'tomas', nodeId: 'welcome' });
+  assert.equal(state.mission.currentStep, 0);
+  events.emit('dialogue:line', { entityId: 'marta', nodeId: 'welcome' });
+  assert.equal(state.mission.currentStep, 1); assert.deepEqual(state.mission.completed, ['a']);
+  events.emit('history:discovered', { entityId: 'memory' });
+  assert.equal(state.mission.status, 'completed'); assert.equal(state.done, true); assert.deepEqual(state.mission.completed, ['a', 'b']);
+  assert.equal(mission.current()?.id, undefined);
+  mission.destroy();
 });
