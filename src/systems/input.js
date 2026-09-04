@@ -1,10 +1,14 @@
 export function createInputSystem() {
   const keys = new Set();
   let touchDirection = null;
+  let interactHandler = null;
   const normalize = (value) => value.toLowerCase();
   const onKeyDown = (event) => {
     keys.add(normalize(event.key));
-    if (event.key === ' ') event.preventDefault();
+    if (event.key === ' ') {
+      event.preventDefault();
+      interactHandler?.();
+    }
   };
   const onKeyUp = (event) => keys.delete(normalize(event.key));
   addEventListener('keydown', onKeyDown);
@@ -13,6 +17,13 @@ export function createInputSystem() {
   const buttons = document.querySelectorAll('#touch button');
   for (const button of buttons) {
     const direction = button.dataset.dir;
+    if (direction === 'interact') {
+      button.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        interactHandler?.();
+      });
+      continue;
+    }
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       touchDirection = direction;
@@ -25,6 +36,7 @@ export function createInputSystem() {
   }
 
   return {
+    setInteractionHandler(handler) { interactHandler = handler; },
     getVector() {
       let x = 0;
       let y = 0;
@@ -38,6 +50,7 @@ export function createInputSystem() {
     destroy() {
       removeEventListener('keydown', onKeyDown);
       removeEventListener('keyup', onKeyUp);
+      interactHandler = null;
     },
   };
 }
