@@ -1,0 +1,9 @@
+{
+  "name": "luna-pelon-core",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Runtime contract and validation metadata for Luna Pelón",
+  "scripts": {
+    "check": "node scripts/validate.mjs"
+  }
+}
