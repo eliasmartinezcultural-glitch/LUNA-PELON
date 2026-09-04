@@ -1,3 +1,5 @@
+import { getLocationById } from '../content/locations.js';
+
 export const GAME_SCHEMA_VERSION = 4;
 export const PLAYER_ENTITY_ID = 'player';
 
@@ -19,9 +21,10 @@ export function createGameState(world, mission) {
 export function sanitizeGameState(raw, world, mission) {
   const fallback = createGameState(world, mission);
   if (!raw || typeof raw !== 'object') return fallback;
+  const currentLocation = getLocationById(raw.currentLocationId) ?? getLocationById('outside');
+  const currentLocationId = currentLocation?.id ?? 'outside';
   const x = Number(raw.x);
   const y = Number(raw.y);
-  const currentLocationId = raw.currentLocationId === 'outside' ? 'outside' : fallback.currentLocationId;
   const rawDialogue = raw.dialogue && typeof raw.dialogue === 'object' ? raw.dialogue : {};
   const rawEncounters = rawDialogue.encounters && typeof rawDialogue.encounters === 'object' ? rawDialogue.encounters : {};
   const rawHistory = Array.isArray(rawDialogue.history) ? rawDialogue.history : [];
@@ -32,12 +35,15 @@ export function sanitizeGameState(raw, world, mission) {
   const maxStep = Array.isArray(mission?.steps) ? mission.steps.length : 0;
   const currentStep = Number.isInteger(rawMission.currentStep) ? Math.max(0, Math.min(maxStep, rawMission.currentStep)) : 0;
   const completedMission = rawMission.status === 'completed' || raw.done === true || (maxStep > 0 && currentStep >= maxStep);
+  const maxX = currentLocationId === 'outside' ? world.width - 30 : currentLocation.width - 30;
+  const minY = currentLocationId === 'outside' ? 90 : 30;
+  const maxY = currentLocationId === 'outside' ? world.height - 30 : currentLocation.height - 30;
   return {
     schema: GAME_SCHEMA_VERSION,
     playerId: PLAYER_ENTITY_ID,
     currentLocationId,
-    x: Number.isFinite(x) ? Math.max(30, Math.min(world.width - 30, x)) : fallback.x,
-    y: Number.isFinite(y) ? Math.max(90, Math.min(world.height - 30, y)) : fallback.y,
+    x: Number.isFinite(x) ? Math.max(30, Math.min(maxX, x)) : (currentLocation.spawn?.x ?? fallback.x),
+    y: Number.isFinite(y) ? Math.max(minY, Math.min(maxY, y)) : (currentLocation.spawn?.y ?? fallback.y),
     done: completedMission,
     seen: raw.seen === true,
     missionId: mission.id,
