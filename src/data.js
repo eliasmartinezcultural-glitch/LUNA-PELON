@@ -1,6 +1,6 @@
 import { MEMORIES } from './content/memories.js';
 
-export const VERSION='v0.9.0';
+export const VERSION='v0.8.0';
 
 export const WORLD={
   width:2400,height:1500,spawn:{x:360,y:760},river:{x:1810,width:220},bridge:{x:1690,y:650,w:460,h:100},
