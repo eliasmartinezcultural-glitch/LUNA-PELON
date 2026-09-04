@@ -1,6 +1,6 @@
 # LUNA PELÓN — ARQUITECTURA OPERATIVA
 
-**Versión:** v0.4.0
+**Versión:** v0.5.0
 
 La arquitectura se diseña para soportar un RPG completo sin obligarnos a reescribir el juego cuando aparezcan interiores, NPCs, diálogos, misiones, inventario, economía, actividades, tiempo, clima, historia, audio, accesibilidad y contenido educativo.
 
@@ -8,16 +8,17 @@ La arquitectura se diseña para soportar un RPG completo sin obligarnos a reescr
 src/
 ├── core/
 │   ├── engine.js             # Orquestación del runtime
-│   ├── state.js              # Estado del jugador/juego
+│   ├── state.js              # Estado del jugador/juego + identidad
 │   ├── event-bus.js          # Eventos desacoplados
 │   ├── world.js              # Modelo lógico del mundo
-│   ├── entity.js             # Contrato de entidades
+│   ├── entity.js             # Registro e identidad de entidades
 │   └── runtime-contract.js   # Compatibilidad/migración
 ├── systems/
 │   ├── input.js              # Acciones PC/móvil
-│   ├── collision.js          # Ocupación y movimiento seguro
+│   ├── collision.js          # Ocupación estática + dinámica
+│   ├── transitability.js     # Superficie y reglas de tránsito
 │   ├── spatial.js            # Consultas espaciales
-│   ├── interaction.js        # Interacciones actuales
+│   ├── interaction.js        # Interacciones por entidades
 │   └── persistence.js        # Carga y guardado
 ├── presentation/
 │   └── world-renderer.js     # Presentación del mundo desde datos
@@ -28,27 +29,25 @@ tests/
 └── core-contract.test.mjs    # Pruebas ejecutables del núcleo
 ```
 
-## v0.4.0 — World Foundation 2
-El mundo deja de depender de geometría dibujada directamente en `main.js`. El renderer recibe el modelo de datos y representa sus caminos, puente, chacras y edificios.
+## v0.5.0 — Living Entities + Transitability
+El runtime deja de tratar NPCs y puntos interactivos como listas especiales. Existe un registro común de entidades con IDs estables. Luna tiene una identidad persistente (`player`) y su posición se sincroniza con el registro durante el juego.
 
-El contenido territorial ahora puede crecer declarativamente mediante:
-- `zones` — regiones funcionales;
-- `roads` — caminos y cruces;
-- `farms` — espacios productivos/rurales;
-- `buildings` — estructuras del territorio;
-- `obstacles` — geometría que gobierna la colisión;
-- `points` — puntos de referencia para sistemas futuros.
+Las interacciones consultan el registro, por lo que futuras conversaciones, objetos, puertas, personajes y lugares pueden incorporarse sin crear un sistema paralelo por tipo.
 
-La regla importante es que **la representación no se convierte en la autoridad del mundo**. La autoridad continúa en los datos y el modelo lógico.
+La colisión ahora distingue entre geometría estática y entidades dinámicas. Los NPCs pueden ser obstáculos físicos sin convertirse en parte de la lógica del renderer.
 
-## Próxima evolución
-El siguiente salto será separar mejor el concepto de terreno/transitabilidad del dibujo visual y comenzar el framework de entidades vivas: jugador, NPCs, objetos y puntos interactivos con identidad, posición y comportamiento independiente.
+La transitabilidad introduce una capa semántica: terreno, camino, chacra, río y puente son superficies del mundo. La velocidad puede depender de la superficie y el motor recibe esa información como regla, no como efecto visual.
+
+## Regla de expansión
+Para agregar una nueva entidad, primero se intenta definir sus datos y contrato. El engine no debe necesitar un `if` nuevo por cada NPC, objeto o lugar.
+
+Para agregar una nueva superficie, se modifica el modelo de mundo y sus reglas de tránsito; el renderer no se convierte en autoridad física.
 
 ## Capas previstas del RPG
 1. **Platform:** navegador, pantalla, teclado/táctil, audio y capacidades del dispositivo.
 2. **Presentation:** renderer, cámara, HUD, menús, animaciones y feedback.
-3. **Gameplay systems:** movimiento, colisión, interacción, navegación, diálogo, misiones, inventario, economía, actividades, NPCs, tiempo/clima y progresión.
-4. **Game core:** estado, eventos, reglas de transición, ciclo de vida y contratos.
+3. **Gameplay systems:** movimiento, colisión, tránsito, interacción, navegación, diálogo, misiones, inventario, economía, actividades, NPCs, tiempo/clima y progresión.
+4. **Game core:** estado, entidades, eventos, reglas de transición, ciclo de vida y contratos.
 5. **Content/data:** mundo, personajes, objetos, misiones, diálogos y contenido histórico verificable.
 6. **Persistence:** guardados, migraciones, versionado de esquema y recuperación segura.
 7. **Validation/tooling:** validadores, CI, pruebas y controles de regresión.
@@ -65,6 +64,7 @@ El renderer no gobierna el estado. El core no importa presentación. La narrativ
 - Comunicación por eventos para reducir acoplamiento.
 - Sistemas independientes de la presentación.
 - Datos declarativos para que el contenido pueda crecer sin reescribir el motor.
+- Identidad estable para entidades y estado persistente.
 - Guardados saneados y migrables.
 - Compatibilidad móvil desde el diseño.
 - Validación automática antes de integrar.

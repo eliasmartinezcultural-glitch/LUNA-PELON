@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 const required = [
   'index.html','styles.css','src/main.js','src/data.js','src/presentation/world-renderer.js','src/core/runtime-contract.js',
   'src/core/state.js','src/core/event-bus.js','src/core/engine.js','src/core/world.js','src/core/entity.js',
-  'src/systems/input.js','src/systems/collision.js','src/systems/spatial.js','src/systems/interaction.js','src/systems/persistence.js',
+  'src/systems/input.js','src/systems/collision.js','src/systems/transitability.js','src/systems/spatial.js','src/systems/interaction.js','src/systems/persistence.js',
   'tests/core-contract.test.mjs','README.md','ARCHITECTURE.md','CORE-CONTRACT.md','CHANGE-PROTOCOL.md','package.json'
 ];
 for (const file of required) if (!fs.existsSync(file)) throw new Error(`Missing required file: ${file}`);
@@ -18,27 +18,30 @@ const state = fs.readFileSync('src/core/state.js','utf8');
 const world = fs.readFileSync('src/core/world.js','utf8');
 const entity = fs.readFileSync('src/core/entity.js','utf8');
 const collision = fs.readFileSync('src/systems/collision.js','utf8');
+const transitability = fs.readFileSync('src/systems/transitability.js','utf8');
 const spatial = fs.readFileSync('src/systems/spatial.js','utf8');
 const interaction = fs.readFileSync('src/systems/interaction.js','utf8');
 const persistence = fs.readFileSync('src/systems/persistence.js','utf8');
 const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
 
 if (!html.includes('src/main.js') || !html.includes('styles.css') || !html.includes('type="module"')) throw new Error('Entrypoint contract failed');
-if (!data.includes("VERSION='v0.4.0'")) throw new Error('World foundation version source is incorrect');
+if (!data.includes("VERSION='v0.5.0'")) throw new Error('Living entities version source is incorrect');
 for (const requiredField of ['zones:', 'roads:', 'farms:', 'buildings:', 'obstacles:', 'points:']) if (!data.includes(requiredField)) throw new Error(`World data contract is incomplete: ${requiredField}`);
-if (pkg.version !== '0.4.0') throw new Error(`package.json version mismatch: ${pkg.version}`);
+if (pkg.version !== '0.5.0') throw new Error(`package.json version mismatch: ${pkg.version}`);
 if (pkg.scripts?.test !== 'node --test tests/core-contract.test.mjs') throw new Error('Test script contract is missing');
 if (!main.includes("./core/engine.js") || !main.includes("./presentation/world-renderer.js")) throw new Error('main.js presentation/core connections failed');
 if (!renderer.includes('world.roads') || !renderer.includes('world.farms') || !renderer.includes('world.buildings')) throw new Error('Renderer is not data-driven');
-if (!engine.includes("../systems/input.js") || !engine.includes("../systems/collision.js") || !engine.includes("../systems/interaction.js") || !engine.includes("../systems/persistence.js")) throw new Error('Engine is missing a required system connection');
-if (!engine.includes("./state.js") || !engine.includes("./event-bus.js") || !engine.includes("./world.js")) throw new Error('Engine is missing core connections');
-if (!engine.includes('moveWithCollision') || !engine.includes("events.emit('player:moved'")) throw new Error('Movement/collision integration failed');
-if (!state.includes('createGameState') || !state.includes('sanitizeGameState')) throw new Error('State contract is incomplete');
-if (!world.includes('createWorldModel') || !world.includes('getZoneAt')) throw new Error('World model contract is incomplete');
-if (!entity.includes('createEntity') || !entity.includes('createEntityRegistry')) throw new Error('Entity contract is incomplete');
-if (!collision.includes('canOccupy') || !collision.includes('moveWithCollision')) throw new Error('Collision system contract is incomplete');
+if (!engine.includes("../systems/input.js") || !engine.includes("../systems/collision.js") || !engine.includes("../systems/transitability.js") || !engine.includes("../systems/interaction.js") || !engine.includes("../systems/persistence.js")) throw new Error('Engine is missing a required system connection');
+if (!engine.includes("./state.js") || !engine.includes("./event-bus.js") || !engine.includes("./world.js") || !engine.includes("./entity.js")) throw new Error('Engine is missing core connections');
+if (!engine.includes('createEntityRegistry') || !engine.includes('state.playerId') || !engine.includes('dynamicEntities')) throw new Error('Living entity runtime integration failed');
+if (!engine.includes('getSurfaceAt') || !engine.includes('getMovementModifier')) throw new Error('Transitability integration failed');
+if (!state.includes('PLAYER_ENTITY_ID') || !state.includes('playerId')) throw new Error('Stable player identity contract failed');
+if (!world.includes('roads') || !world.includes('farms') || !world.includes('buildings') || !world.includes('river')) throw new Error('Semantic world model is incomplete');
+if (!entity.includes('createEntity') || !entity.includes('createEntityRegistry') || !entity.includes('setPosition')) throw new Error('Entity contract is incomplete');
+if (!collision.includes('dynamicEntities') || !collision.includes('overlapsCircleEntity')) throw new Error('Dynamic collision contract is incomplete');
+if (!transitability.includes('getSurfaceAt') || !transitability.includes('getMovementModifier') || !transitability.includes('isTraversable')) throw new Error('Transitability contract is incomplete');
 if (!spatial.includes('findNearby') || !spatial.includes('findById')) throw new Error('Spatial system contract is incomplete');
-if (!interaction.includes("mission:completed") || !interaction.includes("history:discovered")) throw new Error('Interaction events are not connected');
+if (!interaction.includes("entity:interacted") || !interaction.includes("mission:completed") || !interaction.includes("history:discovered")) throw new Error('Interaction events are not connected');
 if (!persistence.includes('try') || !persistence.includes('SAVE_KEY')) throw new Error('Persistence safety contract failed');
 
 const filesToCheck = required.filter(file => file.endsWith('.js') || file.endsWith('.mjs'));

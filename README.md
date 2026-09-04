@@ -3,33 +3,34 @@
 RPG pixel-art educativo, construido desde cero para navegador y preparado para crecer por capas.
 
 ## Versión actual
-**v0.4.0 — World Foundation 2: mundo data-driven**
+**v0.5.0 — Living Entities + Transitability**
 
 ## Qué está construido
-La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se separaron estado, eventos, motor, entrada, colisión, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
+La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se separaron estado, eventos, motor, entrada, colisión, transitabilidad, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
 
 ### Estructura activa
-- `src/core/state.js` — estado y saneamiento.
+- `src/core/state.js` — estado, saneamiento e identidad estable de Luna.
 - `src/core/event-bus.js` — comunicación desacoplada por eventos.
 - `src/core/engine.js` — orquestación del runtime.
-- `src/core/world.js` — modelo lógico del territorio.
-- `src/core/entity.js` — contrato e identidad de entidades.
+- `src/core/world.js` — modelo lógico del territorio y sus superficies.
+- `src/core/entity.js` — registro, identidad y posición de entidades.
 - `src/systems/input.js` — teclado y controles táctiles como acciones comunes.
-- `src/systems/collision.js` — ocupación y movimiento seguro.
+- `src/systems/collision.js` — ocupación estática y dinámica.
+- `src/systems/transitability.js` — terreno, caminos, chacras, río, puente y modificadores de movimiento.
 - `src/systems/spatial.js` — consultas por proximidad e identidad.
-- `src/systems/interaction.js` — interacción y eventos de gameplay.
+- `src/systems/interaction.js` — interacción basada en entidades y eventos.
 - `src/systems/persistence.js` — carga y guardado seguro.
 - `src/presentation/world-renderer.js` — presentación del mundo a partir de datos.
 - `src/main.js` — composición y ciclo principal.
 - `tests/core-contract.test.mjs` — pruebas ejecutables de contratos críticos.
 
-## World Foundation 2
-El territorio ya puede describirse desde `src/data.js` mediante zonas, caminos, puente, chacras, edificios, obstáculos y puntos de referencia. El renderer consume esos datos en lugar de contener la geometría específica del mapa.
+## v0.5.0
+Luna, los NPCs y los puntos interactivos comparten ahora un registro de entidades. Esto prepara el juego para incorporar objetos, puertas, comerciantes, animales y otros actores sin crear una arquitectura distinta para cada categoría.
 
-Esto establece una regla clave: **para ampliar el mundo, primero intentamos agregar/modificar datos; no reescribir el motor.**
+El mundo también tiene una capa semántica de transitabilidad. Una superficie puede ser camino, puente, chacra, terreno o río, y esa clasificación puede influir en las reglas de movimiento independientemente de cómo se dibuje.
 
 ## Próxima etapa
-La siguiente capa será el framework de entidades vivas y transitabilidad: jugador, NPCs, objetos y puntos interactivos deberán tener identidad, posición, reglas de ocupación y comportamiento independiente. Después construiremos navegación y rutinas de NPC.
+La siguiente capa será navegación y comportamiento básico de NPCs: destinos, rutinas, estados de actividad y movimiento autónomo, manteniendo el mismo registro de entidades y el mismo sistema de eventos.
 
 ## Comprobación local
 - `npm test` — ejecuta las pruebas del núcleo.
