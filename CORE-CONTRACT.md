@@ -1,7 +1,7 @@
 # LUNA PELÓN — CONTRATO DEL NÚCLEO
 
-**Versión:** v0.3.1
-**Estado:** HARDENING DEL NÚCLEO + PREPARACIÓN DEL MUNDO
+**Versión:** v0.4.0
+**Estado:** WORLD FOUNDATION 2 — MUNDO DATA-DRIVEN
 
 ## Reglas de mando
 1. `main` es estable. Toda funcionalidad experimental nace en una rama aislada.
@@ -18,6 +18,7 @@
 12. Una versión no se considera terminada sólo porque compile: debe arrancar y conservar sus conexiones.
 13. Los contratos críticos deben tener pruebas ejecutables, no sólo comprobaciones de texto.
 14. Un sistema retirado debe desaparecer de imports, referencias y documentación antes de considerar cerrada la refactorización.
+15. El mundo debe poder ampliarse agregando datos sin obligar a modificar el motor para cada edificio, camino, chacra o punto de interés.
 
 ## Puerta de entrada
 - estructura íntegra;
@@ -27,7 +28,8 @@
 - estado persistente seguro;
 - controles PC/móvil;
 - conexiones entre core y sistemas;
-- mundo definido por datos, no por renderer;
+- mundo definido por datos;
+- presentación separada de reglas;
 - colisiones gobernadas por sistema;
 - entidades con identificadores estables;
 - ausencia de referencias muertas;
@@ -39,7 +41,7 @@
 - rollback disponible.
 
 ## Capas futuras obligatorias
-El RPG podrá incorporar progresivamente escenas/interiores, navegación, NPCs con rutinas, diálogo, misiones, inventario, objetos, economía, actividades, reputación, tiempo, clima, audio, animaciones, historia, accesibilidad, localización, telemetría técnica y guardados migrables sin romper las capas anteriores.
+El RPG podrá incorporar progresivamente terreno/transitabilidad, navegación, escenas/interiores, NPCs con rutinas, diálogo, misiones, inventario, objetos, economía, actividades, reputación, tiempo, clima, audio, animaciones, historia, accesibilidad, localización, telemetría técnica y guardados migrables sin romper las capas anteriores.
 
 ## Prohibición
 No hacer limpiezas destructivas para "empezar de nuevo". Se construye por capas y con respaldo.
