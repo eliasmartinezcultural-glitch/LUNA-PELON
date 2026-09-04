@@ -1,7 +1,7 @@
 # LUNA PELÓN — CONTRATO DEL NÚCLEO
 
-**Versión:** v0.6.0
-**Estado:** LIVING WORLD + NPC NAVIGATION
+**Versión:** v0.7.0  
+**Estado:** DIÁLOGO + MEMORIA NARRATIVA
 
 ## Reglas de mando
 1. `main` es estable. Toda funcionalidad experimental nace en una rama aislada.
@@ -16,41 +16,19 @@
 10. PC y móvil utilizan las mismas acciones lógicas.
 11. El contenido histórico definitivo requiere fuentes revisadas.
 12. Una versión no se considera terminada sólo porque compile: debe arrancar y conservar sus conexiones.
-13. Los contratos críticos deben tener pruebas ejecutables, no sólo comprobaciones de texto.
-14. Un sistema retirado debe desaparecer de imports, referencias y documentación antes de considerar cerrada la refactorización.
-15. El mundo debe poder ampliarse agregando datos sin obligar a modificar el motor para cada edificio, camino, chacra o punto de interés.
-16. Toda entidad persistente o interactiva debe tener un identificador estable.
-17. La ocupación dinámica y la transitabilidad son reglas del gameplay, nunca responsabilidad del renderer.
-18. Las nuevas categorías de entidades deben reutilizar el registro y los contratos existentes antes de crear sistemas paralelos.
-19. La navegación no decide la conducta: entrega rutas; el sistema de NPC decide cuándo, dónde y por qué moverse.
-20. El reloj del mundo es independiente del renderizado y debe poder probarse de forma determinista.
+13. Los contratos críticos deben tener pruebas ejecutables.
+14. Un sistema retirado debe desaparecer de imports, referencias y documentación antes de cerrar la refactorización.
+15. El mundo debe poder ampliarse agregando datos sin modificar el motor para cada contenido.
+16. Toda entidad persistente o interactiva tiene identificador estable.
+17. Ocupación y transitabilidad son reglas del gameplay, nunca del renderer.
+18. Las categorías nuevas reutilizan el registro y contratos existentes.
+19. Navegación entrega rutas; NPC decide conducta.
+20. El reloj es independiente del renderizado y determinista.
+21. El diálogo es contenido declarativo: no se incrusta narrativa específica en el engine.
+22. La memoria narrativa persistida se sanea y tiene límites de tamaño.
 
 ## Puerta de entrada
-- estructura íntegra;
-- imports y rutas válidos;
-- sintaxis válida;
-- entrypoint correcto;
-- estado persistente seguro;
-- controles PC/móvil;
-- conexiones entre core y sistemas;
-- mundo definido por datos;
-- presentación separada de reglas;
-- colisiones estáticas y dinámicas gobernadas por sistema;
-- entidades con identificadores estables;
-- superficies con reglas de tránsito;
-- navegación determinista;
-- rutinas de NPC basadas en datos;
-- reloj del mundo aislado;
-- ausencia de referencias muertas;
-- versión coherente;
-- documentación actualizada;
-- validación automática;
-- pruebas de contratos ejecutadas;
-- ejecución real cuando el entorno lo permita;
-- rollback disponible.
-
-## Capas futuras obligatorias
-El RPG podrá incorporar progresivamente escenas/interiores, diálogo, misiones, inventario, objetos, economía, actividades, reputación, clima, audio, animaciones, historia, accesibilidad, localización, telemetría técnica y guardados migrables sin romper las capas anteriores.
+Estructura íntegra, imports válidos, sintaxis válida, entrypoint correcto, persistencia segura, controles PC/móvil, conexiones core/sistemas, mundo data-driven, presentación separada, colisión estática/dinámica, transitabilidad, navegación, rutinas NPC, reloj, diálogo, memoria narrativa, ausencia de referencias muertas, versión coherente, documentación, validación, pruebas y rollback.
 
 ## Prohibición
 No hacer limpiezas destructivas para "empezar de nuevo". Se construye por capas y con respaldo.
