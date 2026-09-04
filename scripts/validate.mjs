@@ -26,7 +26,7 @@ const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
 if (!html.includes('src/main.js') || !html.includes('styles.css') || !html.includes('type="module"')) throw new Error('Entrypoint contract failed');
 if (!data.includes("VERSION='v0.4.0'")) throw new Error('World foundation version source is incorrect');
 for (const requiredField of ['zones:', 'roads:', 'farms:', 'buildings:', 'obstacles:', 'points:']) if (!data.includes(requiredField)) throw new Error(`World data contract is incomplete: ${requiredField}`);
-if (pkg.version !== '0.3.1') throw new Error(`package.json must remain compatible with release tooling: ${pkg.version}`);
+if (pkg.version !== '0.4.0') throw new Error(`package.json version mismatch: ${pkg.version}`);
 if (pkg.scripts?.test !== 'node --test tests/core-contract.test.mjs') throw new Error('Test script contract is missing');
 if (!main.includes("./core/engine.js") || !main.includes("./presentation/world-renderer.js")) throw new Error('main.js presentation/core connections failed');
 if (!renderer.includes('world.roads') || !renderer.includes('world.farms') || !renderer.includes('world.buildings')) throw new Error('Renderer is not data-driven');
