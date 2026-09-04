@@ -20,7 +20,7 @@ function show(text) {
 }
 
 const engine = createGameEngine({ world: WORLD, npcs: NPCS, discovery: DISCOVERY, mission: MISSION, onMessage: show });
-const renderWorld = createWorldRenderer(ctx, WORLD, NPCS, DISCOVERY, () => engine.state);
+const renderWorld = createWorldRenderer(ctx, WORLD, engine.entities, () => engine.state);
 
 addEventListener('keydown', (event) => {
   if (event.key === ' ') {

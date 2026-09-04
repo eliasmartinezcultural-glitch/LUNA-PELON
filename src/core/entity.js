@@ -3,13 +3,9 @@ export function createEntity(definition) {
   if (!Number.isFinite(definition.x) || !Number.isFinite(definition.y)) {
     throw new Error(`Entity ${definition.id} requires numeric x/y`);
   }
-  return {
-    id: String(definition.id),
-    type: definition.type ?? 'object',
-    x: definition.x,
-    y: definition.y,
-    ...definition,
-  };
+  definition.id = String(definition.id);
+  definition.type ??= 'object';
+  return definition;
 }
 
 export function createEntityRegistry(definitions = []) {
