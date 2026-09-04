@@ -7,6 +7,7 @@ export function createInteractionSystem({ state, registry, near, show, save, eve
 
     const npc = targets.find((entity) => entity.type === 'npc');
     if (npc) {
+      events.emit('entity:interacted', { entityId: npc.id, type: npc.type });
       dialogue.start(npc);
       return true;
     }
@@ -16,7 +17,7 @@ export function createInteractionSystem({ state, registry, near, show, save, eve
       state.seen = true;
       show(`${discovery.title}\n${discovery.text}`);
       events.emit('entity:interacted', { entityId: discovery.id, type: discovery.type });
-      events.emit('history:discovered', { id: discovery.id });
+      events.emit('history:discovered', { entityId: discovery.id });
       save();
       return true;
     }
