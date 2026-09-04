@@ -39,6 +39,12 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
     }
   }
 
+  function destroy() {
+    save();
+    input.destroy();
+    events.clear();
+  }
+
   return {
     state,
     world: worldModel,
@@ -48,6 +54,6 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
     interact: interaction.interact,
     update,
     save,
-    destroy: () => input.destroy(),
+    destroy,
   };
 }
