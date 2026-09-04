@@ -8,6 +8,9 @@ const dialogue = document.querySelector('#dialogue');
 const objective = document.querySelector('#objective');
 const version = document.querySelector('#version');
 let last = performance.now();
+let frameId = 0;
+let saveTimer;
+let stopped = false;
 
 function show(text) {
   dialogue.textContent = text;
@@ -17,7 +20,7 @@ function show(text) {
 }
 
 const engine = createGameEngine({ world: WORLD, npcs: NPCS, discovery: DISCOVERY, mission: MISSION, onMessage: show });
-const renderWorld = createWorldRenderer(ctx, WORLD, NPCS, DISCOVERY, () => engine.state);
+const renderWorld = createWorldRenderer(ctx, WORLD, engine.entities, () => engine.state);
 
 addEventListener('keydown', (event) => {
   if (event.key === ' ') {
@@ -36,6 +39,7 @@ addEventListener('resize', resize);
 resize();
 
 function loop(now) {
+  if (stopped) return;
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now;
   engine.update(dt);
@@ -45,7 +49,18 @@ function loop(now) {
   renderWorld(camX, camY, innerWidth, innerHeight);
   objective.textContent = engine.state.done ? 'Misión completada · explorá' : `Misión: ${MISSION.objective}`;
   version.textContent = VERSION;
-  requestAnimationFrame(loop);
+  frameId = requestAnimationFrame(loop);
 }
+
+function shutdown() {
+  if (stopped) return;
+  stopped = true;
+  clearInterval(saveTimer);
+  cancelAnimationFrame(frameId);
+  engine.destroy();
+}
+
+addEventListener('pagehide', shutdown);
+addEventListener('beforeunload', () => engine.save());
 requestAnimationFrame(loop);
-setInterval(engine.save, 3000);
+saveTimer = setInterval(engine.save, 3000);
