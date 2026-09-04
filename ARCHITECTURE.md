@@ -1,6 +1,6 @@
 # LUNA PELÓN — ARQUITECTURA OPERATIVA
 
-**Versión:** v0.3.0
+**Versión:** v0.3.1
 
 La arquitectura se diseña para soportar un RPG completo sin obligarnos a reescribir el juego cuando aparezcan interiores, NPCs, diálogos, misiones, inventario, economía, actividades, tiempo, clima, historia, audio, accesibilidad y contenido educativo.
 
@@ -21,10 +21,13 @@ src/
 │   └── persistence.js        # Guardado/carga
 ├── data.js                   # Fuente de verdad del contenido
 └── main.js                   # Arranque + renderer temporal
+
+tests/
+└── core-contract.test.mjs    # Pruebas ejecutables del núcleo
 ```
 
 ## Qué significa esta etapa
-Todavía no estamos construyendo "el mapa bonito". Estamos construyendo el esqueleto que permitirá que el mapa sea grande sin convertirse en un archivo inmanejable.
+Todavía no estamos construyendo "el mapa bonito". Estamos cerrando el cinturón de seguridad técnico que permitirá que el mapa sea grande sin convertirse en un archivo inmanejable.
 
 El mundo ya tiene contratos para:
 - límites físicos;
@@ -35,6 +38,8 @@ El mundo ya tiene contratos para:
 - consultas de proximidad;
 - movimiento bloqueado por obstáculos;
 - eventos de movimiento.
+
+Además, el núcleo tiene pruebas ejecutables para estado, mundo, entidades, colisiones y consultas espaciales. El validador las ejecuta antes de declarar la estructura válida.
 
 ## Capas previstas del RPG
 1. **Platform:** navegador, pantalla, teclado/táctil, audio y capacidades del dispositivo.
@@ -70,6 +75,7 @@ Cuando el proyecto crezca, la versión del producto migrará a un manifiesto cen
 - Guardados saneados y migrables.
 - Compatibilidad móvil desde el diseño.
 - Validación automática antes de integrar.
+- Pruebas ejecutables para proteger contratos críticos.
 
 ## Importante para un primer videojuego
 No se presupone conocimiento previo. Cada sistema nuevo debe tener: propósito, entrada, salida, dueño del estado, conexión con el motor, forma de probarlo y criterio para considerarlo terminado.
