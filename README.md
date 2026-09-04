@@ -3,10 +3,10 @@
 RPG pixel-art educativo, construido desde cero para navegador y preparado para crecer por capas.
 
 ## Versión actual
-**v0.3.1 — Hardening del núcleo + preparación del mundo**
+**v0.4.0 — World Foundation 2: mundo data-driven**
 
 ## Qué está construido
-La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se separaron estado, eventos, motor, entrada, colisión, consultas espaciales, interacción, persistencia, mundo y entidades.
+La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se separaron estado, eventos, motor, entrada, colisión, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
 
 ### Estructura activa
 - `src/core/state.js` — estado y saneamiento.
@@ -19,14 +19,17 @@ La estructura inicial concentraba demasiada responsabilidad en `main.js`. Se sep
 - `src/systems/spatial.js` — consultas por proximidad e identidad.
 - `src/systems/interaction.js` — interacción y eventos de gameplay.
 - `src/systems/persistence.js` — carga y guardado seguro.
-- `src/main.js` — arranque y presentación temporal.
+- `src/presentation/world-renderer.js` — presentación del mundo a partir de datos.
+- `src/main.js` — composición y ciclo principal.
 - `tests/core-contract.test.mjs` — pruebas ejecutables de contratos críticos.
 
-## Estado de la arquitectura
-El núcleo ya está preparado para crecer hacia un RPG completo sin convertir el juego en un único archivo gigante. La siguiente gran etapa es construir el mundo como datos: territorio, caminos, río, puente, zonas, edificios, interiores y puntos de interés, manteniendo la presentación separada de las reglas.
+## World Foundation 2
+El territorio ya puede describirse desde `src/data.js` mediante zonas, caminos, puente, chacras, edificios, obstáculos y puntos de referencia. El renderer consume esos datos en lugar de contener la geometría específica del mapa.
 
-## Dirección del proyecto
-La arquitectura queda preparada para incorporar progresivamente NPCs y rutinas, diálogo, misiones, inventario, objetos, economía, actividades, progresión, tiempo, clima, audio, animaciones, historia y accesibilidad.
+Esto establece una regla clave: **para ampliar el mundo, primero intentamos agregar/modificar datos; no reescribir el motor.**
+
+## Próxima etapa
+La siguiente capa será el framework de entidades vivas y transitabilidad: jugador, NPCs, objetos y puntos interactivos deberán tener identidad, posición, reglas de ocupación y comportamiento independiente. Después construiremos navegación y rutinas de NPC.
 
 ## Comprobación local
 - `npm test` — ejecuta las pruebas del núcleo.
