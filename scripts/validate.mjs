@@ -32,7 +32,7 @@ if (!npc.includes('activeSchedule') || !npc.includes('getRuntime')) throw new Er
 if (!time.includes('MINUTES_PER_DAY') || !time.includes('getMinutes')) throw new Error('World clock contract is incomplete');
 if (!dialogue.includes('dialogue:line') || !dialogue.includes('history')) throw new Error('Dialogue system contract is incomplete');
 if (!mission.includes('current') || !mission.includes('mission:step-completed') || !mission.includes('mission:completed')) throw new Error('Mission system contract is incomplete');
-if (!input.includes('setInteractionHandler') || !input.includes("data-dir") || !input.includes("direction === 'interact'")) throw new Error('Input interaction contract is incomplete');
+if (!input.includes('setInteractionHandler') || !input.includes('data-dir') || !input.includes('interactHandler')) throw new Error('Input interaction contract is incomplete');
 const filesToCheck=required.filter(file=>file.endsWith('.js')||file.endsWith('.mjs'));
 for (const file of filesToCheck) { const result=spawnSync(process.execPath,['--check',file],{encoding:'utf8'}); if(result.status!==0) throw new Error(`Syntax check failed for ${file}: ${result.stderr||result.stdout}`); }
 const test=spawnSync(process.execPath,['--test','tests/*.test.mjs'],{encoding:'utf8',shell:true}); if(test.status!==0) throw new Error(`Core tests failed: ${test.stderr||test.stdout}`);
