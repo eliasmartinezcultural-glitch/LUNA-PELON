@@ -1,7 +1,7 @@
 # LUNA PELÓN — PROTOCOLO DE CAMBIOS
 
-**Versión operativa:** v0.2.1
-**Última versión de producto registrada:** v0.2.0
+**Versión operativa:** v0.4.0
+**Última versión de producto registrada:** v0.4.0
 
 ## Identificación
 Cada avance usa una versión semántica `vMAJOR.MINOR.PATCH`.
@@ -16,10 +16,11 @@ Cada avance usa una versión semántica `vMAJOR.MINOR.PATCH`.
 3. Crear rama aislada para el cambio.
 4. Modificar por conjunto coherente.
 5. Ejecutar validación estructural/sintáctica.
-6. Revisar conexiones y referencias.
-7. Abrir PR hacia `main`.
-8. Integrar únicamente una versión validada.
-9. Mantener el commit de la versión como punto de rollback.
+6. Ejecutar pruebas de contratos.
+7. Revisar conexiones y referencias.
+8. Abrir PR hacia `main`.
+9. Integrar únicamente una versión validada.
+10. Mantener el commit de la versión como punto de rollback.
 
 ## Regla Vercel ↔ GitHub
 - **GitHub:** fuente de verdad del código.

@@ -1,6 +1,6 @@
 # LUNA PELÓN — ARQUITECTURA OPERATIVA
 
-**Versión:** v0.3.1
+**Versión:** v0.4.0
 
 La arquitectura se diseña para soportar un RPG completo sin obligarnos a reescribir el juego cuando aparezcan interiores, NPCs, diálogos, misiones, inventario, economía, actividades, tiempo, clima, historia, audio, accesibilidad y contenido educativo.
 
@@ -18,33 +18,36 @@ src/
 │   ├── collision.js          # Ocupación y movimiento seguro
 │   ├── spatial.js            # Consultas espaciales
 │   ├── interaction.js        # Interacciones actuales
-│   └── persistence.js        # Guardado/carga
+│   └── persistence.js        # Carga y guardado
+├── presentation/
+│   └── world-renderer.js     # Presentación del mundo desde datos
 ├── data.js                   # Fuente de verdad del contenido
-└── main.js                   # Arranque + renderer temporal
+└── main.js                   # Arranque y composición
 
 tests/
 └── core-contract.test.mjs    # Pruebas ejecutables del núcleo
 ```
 
-## Qué significa esta etapa
-Todavía no estamos construyendo "el mapa bonito". Estamos cerrando el cinturón de seguridad técnico que permitirá que el mapa sea grande sin convertirse en un archivo inmanejable.
+## v0.4.0 — World Foundation 2
+El mundo deja de depender de geometría dibujada directamente en `main.js`. El renderer recibe el modelo de datos y representa sus caminos, puente, chacras y edificios.
 
-El mundo ya tiene contratos para:
-- límites físicos;
-- zonas identificables;
-- obstáculos de colisión;
-- puntos de interés;
-- entidades con IDs estables;
-- consultas de proximidad;
-- movimiento bloqueado por obstáculos;
-- eventos de movimiento.
+El contenido territorial ahora puede crecer declarativamente mediante:
+- `zones` — regiones funcionales;
+- `roads` — caminos y cruces;
+- `farms` — espacios productivos/rurales;
+- `buildings` — estructuras del territorio;
+- `obstacles` — geometría que gobierna la colisión;
+- `points` — puntos de referencia para sistemas futuros.
 
-Además, el núcleo tiene pruebas ejecutables para estado, mundo, entidades, colisiones y consultas espaciales. El validador las ejecuta antes de declarar la estructura válida.
+La regla importante es que **la representación no se convierte en la autoridad del mundo**. La autoridad continúa en los datos y el modelo lógico.
+
+## Próxima evolución
+El siguiente salto será separar mejor el concepto de terreno/transitabilidad del dibujo visual y comenzar el framework de entidades vivas: jugador, NPCs, objetos y puntos interactivos con identidad, posición y comportamiento independiente.
 
 ## Capas previstas del RPG
 1. **Platform:** navegador, pantalla, teclado/táctil, audio y capacidades del dispositivo.
 2. **Presentation:** renderer, cámara, HUD, menús, animaciones y feedback.
-3. **Gameplay systems:** movimiento, colisión, interacción, diálogo, misiones, inventario, economía, actividades, NPCs, tiempo/clima y progresión.
+3. **Gameplay systems:** movimiento, colisión, interacción, navegación, diálogo, misiones, inventario, economía, actividades, NPCs, tiempo/clima y progresión.
 4. **Game core:** estado, eventos, reglas de transición, ciclo de vida y contratos.
 5. **Content/data:** mundo, personajes, objetos, misiones, diálogos y contenido histórico verificable.
 6. **Persistence:** guardados, migraciones, versionado de esquema y recuperación segura.
@@ -53,17 +56,7 @@ Además, el núcleo tiene pruebas ejecutables para estado, mundo, entidades, col
 ## Regla de dependencia
 `platform/presentation → systems → core → data contracts`
 
-El renderer no gobierna el estado. Los sistemas no deben depender entre sí mediante referencias rígidas cuando un evento o contrato pueda desacoplarlos. El core no importa presentación. La narrativa no queda incrustada en reglas de movimiento.
-
-## Fuente única de verdad
-- Versión del producto: `src/data.js` por ahora.
-- Estado runtime: `src/core/state.js`.
-- Mundo lógico: `src/core/world.js`.
-- Entidades: `src/core/entity.js`.
-- Persistencia: `src/systems/persistence.js`.
-- Coordinación: `src/core/engine.js`.
-
-Cuando el proyecto crezca, la versión del producto migrará a un manifiesto central sin duplicaciones.
+El renderer no gobierna el estado. El core no importa presentación. La narrativa no queda incrustada en reglas de movimiento. Los datos describen el contenido y los sistemas ejecutan las reglas.
 
 ## Principios profesionales aplicados
 - Separación de datos y lógica.
@@ -76,9 +69,6 @@ Cuando el proyecto crezca, la versión del producto migrará a un manifiesto cen
 - Compatibilidad móvil desde el diseño.
 - Validación automática antes de integrar.
 - Pruebas ejecutables para proteger contratos críticos.
-
-## Importante para un primer videojuego
-No se presupone conocimiento previo. Cada sistema nuevo debe tener: propósito, entrada, salida, dueño del estado, conexión con el motor, forma de probarlo y criterio para considerarlo terminado.
 
 ## Regla de refactor
 Conectar → validar → probar → documentar → retirar duplicado. Nunca retirar primero.

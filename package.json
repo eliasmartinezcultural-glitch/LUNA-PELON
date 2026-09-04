@@ -1,6 +1,6 @@
 {
   "name": "luna-pelon-core",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "description": "Fundación modular del RPG Luna Pelón",
   "scripts": {

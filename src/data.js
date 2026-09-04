@@ -1,4 +1,4 @@
-export const VERSION='v0.3.1';
+export const VERSION='v0.4.0';
 
 export const WORLD={
   width:2400,
@@ -12,8 +12,25 @@ export const WORLD={
     {id:'river-west',name:'Ribera',x:1570,y:180,width:240,height:1170},
     {id:'river-east',name:'Más allá del río',x:2030,y:180,width:250,height:1170}
   ],
+  roads:[
+    {id:'main-road',x:0,y:650,width:1690,height:105,kind:'road'},
+    {id:'riverside-road',x:1590,y:650,width:620,height:100,kind:'road'},
+    {id:'bridge',x:1690,y:650,width:460,height:100,kind:'bridge'}
+  ],
+  farms:[
+    {id:'north-grove',x:190,y:230,width:420,height:250},
+    {id:'orchard-west',x:620,y:910,width:430,height:250},
+    {id:'orchard-south',x:1080,y:1040,width:360,height:220}
+  ],
+  buildings:[
+    {id:'house-marta',x:270,y:420,width:190,height:150,roof:'#9c5b42',type:'house'},
+    {id:'community-center',x:820,y:360,width:210,height:140,roof:'#a36c4b',type:'public'},
+    {id:'workshop',x:1180,y:420,width:230,height:150,roof:'#8b6045',type:'workshop'}
+  ],
   obstacles:[
     {id:'house-marta',x:270,y:420,width:190,height:150},
+    {id:'community-center',x:820,y:360,width:210,height:140},
+    {id:'workshop',x:1180,y:420,width:230,height:150},
     {id:'river-north',x:1810,y:0,width:220,height:650},
     {id:'river-south',x:1810,y:750,width:220,height:750}
   ],
@@ -21,7 +38,10 @@ export const WORLD={
     spawn:{x:360,y:760},
     marta:{x:760,y:690},
     tomas:{x:1320,y:930},
-    firstMemory:{x:1040,y:520}
+    firstMemory:{x:1040,y:520},
+    communityCenter:{x:925,y:520},
+    bridgeWest:{x:1690,y:700},
+    bridgeEast:{x:2150,y:700}
   }
 };
 
