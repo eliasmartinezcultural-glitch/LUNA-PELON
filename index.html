@@ -12,42 +12,35 @@
 <section class="title-card">
 <p class="eyebrow">OCARINA PRODUCCIONES PRESENTA</p>
 <h1>LUNA PELÓN</h1>
-<p class="subtitle">Una historia viva comienza aquí.</p>
-<div class="menu-copy">Explorá. Conocé a sus habitantes. Descubrí sus historias.</div>
+<p class="subtitle">Historia Viva</p>
+<div class="menu-copy">Explorá el pueblo. Conocé a sus habitantes. Tomá decisiones. Descubrí sus historias.</div>
 <button id="playButton">COMENZAR</button>
 </section>
 </main>
-
 <main id="game" class="screen hidden">
 <header class="hud">
 <div><strong>LUNA PELÓN</strong><span id="dayLabel">DÍA 1 · MAÑANA</span></div>
 <div class="hud-right"><span id="coinLabel">🪙 0</span><button id="inventoryButton" class="hud-button">🎒 INVENTARIO</button></div>
 </header>
-
 <section id="world" aria-label="Mundo del juego">
 <div class="ground"></div><div class="path"></div><div class="road"></div>
-<div class="house house-a"><span class="building-label">CASA</span></div>
+<div class="house house-a"><span class="building-label">CASA DEL VECINO</span></div>
 <div class="house house-b"><span class="building-label">ALMACÉN</span></div>
 <div class="tree tree-a"></div><div class="tree tree-b"></div><div class="tree tree-c"></div>
 <div class="sign sign-a">LUNA PELÓN</div>
 <div class="item letter" id="letter"><span>✉</span><b>CARTA</b></div>
+<div class="item bread" id="bread"><span>🥖</span><b>PAN</b></div>
 <div class="npc npc-a"><span class="npc-label">Vecino</span></div>
 <div class="npc npc-b"><span class="npc-label">Luna</span></div>
+<div class="npc npc-c"><span class="npc-label">Almacenero</span></div>
 <div id="player" aria-label="Personaje"></div>
 <div id="interaction" class="interaction"></div>
 <div id="dialogue" class="dialogue"></div>
-<div id="questPanel" class="quest-panel">
-<div class="quest-kicker">MISIÓN ACTUAL</div><strong id="questTitle">Sin misión</strong><p id="questObjective">Explorá el pueblo y hablá con alguien.</p>
-</div>
+<div id="questPanel" class="quest-panel"><div class="quest-kicker">MISIÓN ACTUAL</div><strong id="questTitle">Sin misión</strong><p id="questObjective">Explorá el pueblo y hablá con alguien.</p></div>
 <div id="toast" class="toast"></div>
-<div id="inventory" class="inventory hidden">
-<div class="inventory-head"><strong>INVENTARIO</strong><button id="closeInventory">×</button></div>
-<div id="inventoryItems" class="inventory-items"></div>
-</div>
-<div class="touch-controls" aria-label="Controles táctiles">
-<button data-key="arrowup">▲</button><div><button data-key="arrowleft">◀</button><button data-key="arrowdown">▼</button><button data-key="arrowright">▶</button></div><button data-key="e">HABLAR</button>
-</div>
-<div class="hint">WASD / FLECHAS · E PARA INTERACTUAR</div>
+<div id="inventory" class="inventory hidden"><div class="inventory-head"><strong>INVENTARIO</strong><button id="closeInventory" aria-label="Cerrar">×</button></div><div id="inventoryItems" class="inventory-items"></div></div>
+<div class="touch-controls" aria-label="Controles táctiles"><button data-key="arrowup">▲</button><div><button data-key="arrowleft">◀</button><button data-key="arrowdown">▼</button><button data-key="arrowright">▶</button></div><button data-key="e">INTERACTUAR</button></div>
+<div class="hint">WASD / FLECHAS · E INTERACTUAR · I INVENTARIO</div>
 </section>
 </main>
 <script src="game.js"></script>
