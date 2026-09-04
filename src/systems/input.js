@@ -1,10 +1,13 @@
-export function createInputSystem() {
+export function createInputSystem({ onInteract } = {}) {
   const keys = new Set();
   let touchDirection = null;
   const normalize = (value) => value.toLowerCase();
   const onKeyDown = (event) => {
     keys.add(normalize(event.key));
-    if (event.key === ' ') event.preventDefault();
+    if (event.key === ' ') {
+      event.preventDefault();
+      onInteract?.();
+    }
   };
   const onKeyUp = (event) => keys.delete(normalize(event.key));
   addEventListener('keydown', onKeyDown);
@@ -13,6 +16,13 @@ export function createInputSystem() {
   const buttons = document.querySelectorAll('#touch button');
   for (const button of buttons) {
     const direction = button.dataset.dir;
+    if (direction === 'interact') {
+      button.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        onInteract?.();
+      });
+      continue;
+    }
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       touchDirection = direction;
