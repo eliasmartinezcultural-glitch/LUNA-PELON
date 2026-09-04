@@ -1,4 +1,4 @@
-export const VERSION='v0.5.0';
+export const VERSION='v0.6.0';
 
 export const WORLD={
   width:2400,
@@ -46,8 +46,28 @@ export const WORLD={
 };
 
 export const NPCS=[
-  {id:'marta',type:'npc',name:'Marta',x:760,y:690,color:'#9b5b43',radius:14,collidable:true,interactable:true,text:'Hola, Luna. Si querés conocer Villa Pelón, empezá por mirar el territorio y escuchar sus historias.'},
-  {id:'tomas',type:'npc',name:'Tomás',x:1320,y:930,color:'#536d4b',radius:14,collidable:true,interactable:true,text:'El paisaje también guarda memoria: el río, las chacras y los caminos ayudan a entender cómo se construyó una comunidad.'}
+  {
+    id:'marta',type:'npc',name:'Marta',x:760,y:690,color:'#9b5b43',radius:14,collidable:true,interactable:true,speed:62,
+    schedule:[
+      {start:0,target:'point:houseMarta',state:'resting'},
+      {start:8*60,target:'point:communityCenter',state:'working'},
+      {start:13*60,target:'point:houseMarta',state:'resting'},
+      {start:17*60,target:'point:communityCenter',state:'talking'},
+      {start:21*60,target:'point:houseMarta',state:'resting'}
+    ],
+    text:'Hola, Luna. Si querés conocer Villa Pelón, empezá por mirar el territorio y escuchar sus historias.'
+  },
+  {
+    id:'tomas',type:'npc',name:'Tomás',x:1320,y:930,color:'#536d4b',radius:14,collidable:true,interactable:true,speed:68,
+    schedule:[
+      {start:0,target:'point:houseMarta',state:'resting'},
+      {start:7*60,target:'point:orchardWest',state:'working'},
+      {start:14*60,target:'point:bridgeWest',state:'walking'},
+      {start:18*60,target:'point:communityCenter',state:'talking'},
+      {start:22*60,target:'point:houseMarta',state:'resting'}
+    ],
+    text:'El paisaje también guarda memoria: el río, las chacras y los caminos ayudan a entender cómo se construyó una comunidad.'
+  }
 ];
 
 export const DISCOVERY={id:'first-memory',type:'discovery',x:1040,y:520,title:'Primera huella',interactable:true,collidable:false,text:'El primer aprendizaje de Luna: una historia local no vive solamente en fechas. También vive en el territorio, sus caminos, el agua, el trabajo y las personas.'};
