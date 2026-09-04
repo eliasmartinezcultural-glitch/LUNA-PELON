@@ -9,6 +9,8 @@ const objective = document.querySelector('#objective');
 const version = document.querySelector('#version');
 let last = performance.now();
 let frameId = 0;
+let saveTimer;
+let stopped = false;
 
 function show(text) {
   dialogue.textContent = text;
@@ -37,6 +39,7 @@ addEventListener('resize', resize);
 resize();
 
 function loop(now) {
+  if (stopped) return;
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now;
   engine.update(dt);
@@ -50,7 +53,9 @@ function loop(now) {
 }
 
 function shutdown() {
-  engine.save();
+  if (stopped) return;
+  stopped = true;
+  clearInterval(saveTimer);
   cancelAnimationFrame(frameId);
   engine.destroy();
 }
@@ -58,4 +63,4 @@ function shutdown() {
 addEventListener('pagehide', shutdown);
 addEventListener('beforeunload', () => engine.save());
 requestAnimationFrame(loop);
-const saveTimer = setInterval(engine.save, 3000);
+saveTimer = setInterval(engine.save, 3000);
