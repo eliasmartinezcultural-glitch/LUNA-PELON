@@ -8,6 +8,9 @@ import { createEntityRegistry } from '../src/core/entity.js';
 import { canOccupy, moveWithCollision } from '../src/systems/collision.js';
 import { getSurfaceAt, getMovementModifier, isTraversable } from '../src/systems/transitability.js';
 import { findNearby, findById } from '../src/systems/spatial.js';
+import { createNavigationSystem } from '../src/systems/navigation.js';
+import { createNpcSystem } from '../src/systems/npc.js';
+import { createWorldClock } from '../src/systems/time.js';
 
 const world = {
   width: 1000,
@@ -23,12 +26,12 @@ const world = {
 };
 
 test('release data exposes the expected living-world foundation', () => {
-  assert.equal(VERSION, 'v0.5.0');
+  assert.equal(VERSION, 'v0.6.0');
   assert.ok(WORLD.zones.length >= 4);
   assert.ok(WORLD.roads.length >= 3);
   assert.ok(WORLD.farms.length >= 3);
   assert.ok(WORLD.buildings.length >= 3);
-  assert.ok(NPCS.every((npc) => typeof npc.id === 'string'));
+  assert.ok(NPCS.every((npc) => Array.isArray(npc.schedule) && npc.schedule.length > 0));
   assert.equal(DISCOVERY.type, 'discovery');
 });
 
@@ -51,6 +54,7 @@ test('world model resolves zones and semantic surfaces', () => {
   assert.equal(getZoneAt(model, 100, 100)?.id, 'town');
   assert.equal(getZoneAt(model, 900, 700), null);
   assert.equal(model.obstacles.length, 1);
+  assert.equal(model.bridge.width, 200);
   assert.equal(getSurfaceAt(model, 100, 190), 'road');
   assert.equal(getSurfaceAt(model, 100, 350), 'farm');
   assert.equal(getSurfaceAt(model, 650, 200), 'river');
@@ -82,6 +86,41 @@ test('movement cannot tunnel through an obstacle', () => {
   state.y = 150;
   moveWithCollision(state, { x: 1, y: 0 }, model, 0.5, 200, 14);
   assert.equal(state.x < 200 - 14, true);
+});
+
+test('navigation finds a route around blocked cells', () => {
+  const model = createWorldModel(world);
+  const navigation = createNavigationSystem({
+    worldModel: model,
+    cellSize: 20,
+    isBlocked: (x, y, radius) => !canOccupy(model, x, y, radius),
+  });
+  const path = navigation.findPath({ x: 100, y: 100 }, { x: 380, y: 100 }, 10);
+  assert.ok(path.length > 0);
+  assert.deepEqual(path.at(-1), { x: 380, y: 100 });
+});
+
+test('NPC system follows a scheduled landmark and exposes runtime state', () => {
+  const registry = createEntityRegistry([
+    { id: 'npc-1', type: 'npc', x: 100, y: 100, radius: 10, speed: 50, schedule: [{ start: 0, target: 'point:work', state: 'working' }] },
+    { id: 'point:work', type: 'landmark', x: 200, y: 100 },
+  ]);
+  const npcSystem = createNpcSystem({
+    registry,
+    navigation: { findPath: () => [{ x: 200, y: 100 }] },
+    getTimeMinutes: () => 60,
+    moveEntity: (entity, direction, dt, speed) => { entity.x += direction.x * speed * dt; entity.y += direction.y * speed * dt; return true; },
+  });
+  npcSystem.update(1);
+  assert.equal(npcSystem.getRuntime('npc-1').state, 'working');
+  assert.ok(registry.get('npc-1').x > 100);
+});
+
+test('world clock wraps cleanly at the end of a day', () => {
+  const clock = createWorldClock({ startMinutes: 1439, timeScale: 1 });
+  clock.update(2);
+  assert.equal(clock.getMinutes(), 1);
+  assert.equal(clock.getLabel(), '00:01');
 });
 
 test('spatial queries return the nearest relevant entities', () => {
