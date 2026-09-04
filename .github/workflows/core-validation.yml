@@ -2,7 +2,7 @@ name: Core Validation
 
 on:
   push:
-    branches: [main, 'core/**']
+    branches: [main, 'core/**', 'world/**']
   pull_request:
     branches: [main]
 
