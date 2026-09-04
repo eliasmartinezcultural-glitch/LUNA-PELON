@@ -1,11 +1,13 @@
 import { createGameState, sanitizeGameState } from './state.js';
 import { createEventBus } from './event-bus.js';
+import { createWorldModel } from './world.js';
 import { createInputSystem } from '../systems/input.js';
-import { updateMovement } from '../systems/movement.js';
+import { moveWithCollision } from '../systems/collision.js';
 import { createInteractionSystem } from '../systems/interaction.js';
 import { loadState, saveState } from '../systems/persistence.js';
 
 export function createGameEngine({ world, npcs, discovery, mission, storage = localStorage, onMessage }) {
+  const worldModel = createWorldModel(world);
   const events = createEventBus();
   const input = createInputSystem();
   const initial = createGameState(world, mission);
@@ -16,8 +18,10 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
   const interaction = createInteractionSystem({ state, npcs, discovery, near, show, save, events });
 
   function update(dt) {
-    const moved = updateMovement(state, input, world, dt);
+    const direction = input.getVector();
+    const moved = moveWithCollision(state, direction, worldModel, dt);
     if (moved) {
+      events.emit('player:moved', { x: state.x, y: state.y });
       for (const npc of npcs) if (near(state, npc, 52)) show(`Presioná ESPACIO para hablar con ${npc.name}.`);
       if (near(state, discovery, 65)) show('Presioná ESPACIO para observar la memoria.');
     }
@@ -25,6 +29,7 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
 
   return {
     state,
+    world: worldModel,
     input,
     events,
     interact: interaction.interact,
