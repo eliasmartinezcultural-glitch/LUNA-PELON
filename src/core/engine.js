@@ -10,6 +10,7 @@ import { createNavigationSystem } from '../systems/navigation.js';
 import { createNpcSystem } from '../systems/npc.js';
 import { createWorldClock } from '../systems/time.js';
 import { createDialogueSystem } from '../systems/dialogue.js';
+import { createMissionSystem } from '../systems/mission.js';
 import { loadState, saveState } from '../systems/persistence.js';
 
 export function createGameEngine({ world, npcs, discovery, mission, storage = localStorage, onMessage }) {
@@ -30,6 +31,7 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
   const save = () => saveState(storage, state, world, mission, sanitizeGameState);
   const near = (a, b, radius = 75) => Math.hypot(a.x - b.x, a.y - b.y) < radius;
   const dialogue = createDialogueSystem({ state, events, save, show });
+  const missions = createMissionSystem({ state, mission, events, save, show });
   const interaction = createInteractionSystem({ state, registry, near, show, save, events, dialogue });
   const navigation = createNavigationSystem({ worldModel, isBlocked: (x, y, radius) => !canOccupy(worldModel, x, y, radius, registry.all().filter((entity) => entity.type === 'npc')) });
   const npcSystem = createNpcSystem({
@@ -54,6 +56,6 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
     }
   }
 
-  function destroy() { save(); dialogue.resetAll(); input.destroy(); events.clear(); }
-  return { state, world: worldModel, entities: registry, input, events, clock, npcSystem, dialogue, interact: interaction.interact, update, save, destroy };
+  function destroy() { save(); missions.destroy(); dialogue.resetAll(); input.destroy(); events.clear(); }
+  return { state, world: worldModel, entities: registry, input, events, clock, npcSystem, dialogue, missions, interact: interaction.interact, update, save, destroy };
 }
