@@ -1,4 +1,4 @@
-export const VERSION='v0.3.0';
+export const VERSION='v0.3.1';
 
 export const WORLD={
   width:2400,
