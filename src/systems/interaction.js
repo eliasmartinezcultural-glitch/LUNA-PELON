@@ -1,5 +1,7 @@
-export function createInteractionSystem({ state, registry, near, show, save, events, dialogue }) {
+export function createInteractionSystem({ state, registry, near, show, save, events, dialogue, locationSystem }) {
   function interact() {
+    if (locationSystem?.interactAt(state.x, state.y)) return true;
+
     const player = { x: state.x, y: state.y };
     const targets = registry.all()
       .filter((entity) => entity.id !== state.playerId && entity.interactable !== false)
