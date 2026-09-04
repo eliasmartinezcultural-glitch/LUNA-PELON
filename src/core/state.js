@@ -27,16 +27,18 @@ export function sanitizeGameState(raw, world, mission) {
   const history = rawHistory.filter((entry) => entry && typeof entry === 'object' && typeof entry.entityId === 'string' && typeof entry.nodeId === 'string' && Number.isInteger(entry.encounter)).slice(-50);
   const rawMission = raw.mission && typeof raw.mission === 'object' ? raw.mission : {};
   const completed = Array.isArray(rawMission.completed) ? rawMission.completed.filter((id) => typeof id === 'string').slice(0, 100) : [];
-  const currentStep = Number.isInteger(rawMission.currentStep) ? Math.max(0, rawMission.currentStep) : 0;
+  const maxStep = Array.isArray(mission?.steps) ? mission.steps.length : 0;
+  const currentStep = Number.isInteger(rawMission.currentStep) ? Math.max(0, Math.min(maxStep, rawMission.currentStep)) : 0;
+  const completedMission = rawMission.status === 'completed' || raw.done === true || (maxStep > 0 && currentStep >= maxStep);
   return {
     schema: GAME_SCHEMA_VERSION,
     playerId: PLAYER_ENTITY_ID,
     x: Number.isFinite(x) ? Math.max(30, Math.min(world.width - 30, x)) : fallback.x,
     y: Number.isFinite(y) ? Math.max(90, Math.min(world.height - 30, y)) : fallback.y,
-    done: raw.done === true,
+    done: completedMission,
     seen: raw.seen === true,
     missionId: mission.id,
-    mission: { id: mission.id, status: rawMission.status === 'completed' || raw.done === true ? 'completed' : 'active', currentStep, completed },
+    mission: { id: mission.id, status: completedMission ? 'completed' : 'active', currentStep, completed },
     dialogue: { encounters, history },
   };
 }
