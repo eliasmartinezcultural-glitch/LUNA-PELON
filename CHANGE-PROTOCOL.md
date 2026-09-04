@@ -1,38 +1,35 @@
 # LUNA PELÓN — PROTOCOLO DE CAMBIOS
 
-**Versión operativa:** v0.6.0
-**Última versión de producto registrada:** v0.6.0
+**Versión operativa:** v0.7.0  
+**Última versión de producto registrada:** v0.7.0
 
 ## Identificación
-Cada avance usa una versión semántica `vMAJOR.MINOR.PATCH`.
+Cada avance usa `vMAJOR.MINOR.PATCH`.
 
-- **MAJOR:** cambio de arquitectura incompatible.
-- **MINOR:** nueva capacidad compatible.
-- **PATCH:** reparación compatible o sincronización documental/estructural.
+- MAJOR: cambio incompatible.
+- MINOR: nueva capacidad compatible.
+- PATCH: reparación compatible o sincronización.
 
 ## Flujo obligatorio
-1. Leer el estado actual de `main`.
-2. Crear respaldo del último estado estable.
-3. Crear rama aislada para el cambio.
+1. Leer el estado actual.
+2. Crear respaldo.
+3. Crear rama aislada.
 4. Modificar por conjunto coherente.
-5. Ejecutar validación estructural/sintáctica.
+5. Validar estructura y sintaxis.
 6. Ejecutar pruebas de contratos.
 7. Revisar conexiones y referencias.
 8. Abrir PR hacia `main`.
-9. Integrar únicamente una versión validada.
-10. Mantener el commit de la versión como punto de rollback.
+9. Integrar sólo una versión validada.
+10. Conservar commit estable para rollback.
 
-## Regla Vercel ↔ GitHub
-- **GitHub:** fuente de verdad del código.
-- **Vercel:** entorno de despliegue/preview.
-- Un preview sirve para verificar una versión; no reemplaza el commit.
-- No se considera una versión "funcionando" sólo porque haya sido publicada: debe pasar las comprobaciones del repositorio y, cuando sea posible, una comprobación de ejecución.
+## GitHub ↔ Vercel
+GitHub es la fuente de verdad del código. Vercel es despliegue/preview. Una publicación no reemplaza la validación del repositorio ni una prueba de ejecución cuando esté disponible.
 
-## Criterio de rollback
-Si el cambio introduce una regresión crítica, se vuelve al último commit estable. Nunca se fuerza una integración sólo para conservar trabajo reciente.
+## v0.7.0
+La capa narrativa incorpora diálogo declarativo, memoria de encuentros e historial acotado. Las consecuencias de conversación se comunican mediante eventos, manteniendo desacoplados contenido, engine y presentación.
 
-## Registro de versión
-Cada release estable debe dejar commit identificable, versión declarada, respaldo anterior, cambios documentados, validación ejecutada y ruta de prueba/deploy conocida.
+## Rollback
+Ante una regresión crítica, volver al último commit estable. Nunca forzar integración sólo para conservar trabajo reciente.
 
-## Regla de conservación
-El contenido histórico y narrativo definitivo deberá agregarse sólo con una fuente revisada. La infraestructura no debe bloquear el juego por depender de datos históricos todavía no verificados.
+## Conservación histórica
+El contenido histórico definitivo sólo se incorpora con fuentes revisadas. La infraestructura puede avanzar independientemente de esa investigación.
