@@ -1,4 +1,4 @@
-export function createInteractionSystem({ state, registry, near, show, save, events }) {
+export function createInteractionSystem({ state, registry, near, show, save, events, dialogue }) {
   function interact() {
     const player = { x: state.x, y: state.y };
     const targets = registry.all()
@@ -7,11 +7,7 @@ export function createInteractionSystem({ state, registry, near, show, save, eve
 
     const npc = targets.find((entity) => entity.type === 'npc');
     if (npc) {
-      state.done = true;
-      show(`${npc.name}: ${npc.text}`);
-      events.emit('entity:interacted', { entityId: npc.id, type: npc.type });
-      events.emit('mission:completed', { missionId: state.missionId, actorId: npc.id });
-      save();
+      dialogue.start(npc);
       return true;
     }
 
