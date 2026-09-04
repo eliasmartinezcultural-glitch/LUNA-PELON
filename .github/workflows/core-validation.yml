@@ -1,0 +1,23 @@
+name: Core Validation
+
+on:
+  push:
+    branches: [main, 'core/**']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Structural and syntax validation
+        run: node scripts/validate.mjs
