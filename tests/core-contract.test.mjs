@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import { VERSION, WORLD, NPCS } from '../src/data.js';
 import { createGameState, sanitizeGameState, GAME_SCHEMA_VERSION } from '../src/core/state.js';
 import { createWorldModel, getZoneAt } from '../src/core/world.js';
 import { createEntityRegistry } from '../src/core/entity.js';
@@ -18,6 +19,15 @@ const world = {
     { id: 'wall', x: 200, y: 100, width: 100, height: 100 }
   ]
 };
+
+test('release data exposes the expected world foundation', () => {
+  assert.equal(VERSION, 'v0.4.0');
+  assert.ok(WORLD.zones.length >= 4);
+  assert.ok(WORLD.roads.length >= 3);
+  assert.ok(WORLD.farms.length >= 3);
+  assert.ok(WORLD.buildings.length >= 3);
+  assert.ok(NPCS.every((npc) => typeof npc.id === 'string'));
+});
 
 test('state has a stable schema and sanitizes invalid coordinates', () => {
   const state = createGameState(world, { id: 'm1' });
