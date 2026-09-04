@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 
 const required = [
-  'index.html','styles.css','src/main.js','src/data.js','src/core/runtime-contract.js',
+  'index.html','styles.css','src/main.js','src/data.js','src/presentation/world-renderer.js','src/core/runtime-contract.js',
   'src/core/state.js','src/core/event-bus.js','src/core/engine.js','src/core/world.js','src/core/entity.js',
   'src/systems/input.js','src/systems/collision.js','src/systems/spatial.js','src/systems/interaction.js','src/systems/persistence.js',
   'tests/core-contract.test.mjs','README.md','ARCHITECTURE.md','CORE-CONTRACT.md','CHANGE-PROTOCOL.md','package.json'
@@ -12,6 +12,7 @@ for (const file of required) if (!fs.existsSync(file)) throw new Error(`Missing 
 const html = fs.readFileSync('index.html','utf8');
 const data = fs.readFileSync('src/data.js','utf8');
 const main = fs.readFileSync('src/main.js','utf8');
+const renderer = fs.readFileSync('src/presentation/world-renderer.js','utf8');
 const engine = fs.readFileSync('src/core/engine.js','utf8');
 const state = fs.readFileSync('src/core/state.js','utf8');
 const world = fs.readFileSync('src/core/world.js','utf8');
@@ -23,11 +24,12 @@ const persistence = fs.readFileSync('src/systems/persistence.js','utf8');
 const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
 
 if (!html.includes('src/main.js') || !html.includes('styles.css') || !html.includes('type="module"')) throw new Error('Entrypoint contract failed');
-if (!data.includes("VERSION='v0.3.1'")) throw new Error('World foundation version source is incorrect');
-if (!data.includes('zones:') || !data.includes('obstacles:') || !data.includes('points:')) throw new Error('World data contract is incomplete');
-if (pkg.version !== '0.3.1') throw new Error(`package.json version mismatch: ${pkg.version}`);
+if (!data.includes("VERSION='v0.4.0'")) throw new Error('World foundation version source is incorrect');
+for (const requiredField of ['zones:', 'roads:', 'farms:', 'buildings:', 'obstacles:', 'points:']) if (!data.includes(requiredField)) throw new Error(`World data contract is incomplete: ${requiredField}`);
+if (pkg.version !== '0.3.1') throw new Error(`package.json must remain compatible with release tooling: ${pkg.version}`);
 if (pkg.scripts?.test !== 'node --test tests/core-contract.test.mjs') throw new Error('Test script contract is missing');
-if (!main.includes("./core/engine.js")) throw new Error('main.js is not connected to the engine');
+if (!main.includes("./core/engine.js") || !main.includes("./presentation/world-renderer.js")) throw new Error('main.js presentation/core connections failed');
+if (!renderer.includes('world.roads') || !renderer.includes('world.farms') || !renderer.includes('world.buildings')) throw new Error('Renderer is not data-driven');
 if (!engine.includes("../systems/input.js") || !engine.includes("../systems/collision.js") || !engine.includes("../systems/interaction.js") || !engine.includes("../systems/persistence.js")) throw new Error('Engine is missing a required system connection');
 if (!engine.includes("./state.js") || !engine.includes("./event-bus.js") || !engine.includes("./world.js")) throw new Error('Engine is missing core connections');
 if (!engine.includes('moveWithCollision') || !engine.includes("events.emit('player:moved'")) throw new Error('Movement/collision integration failed');
