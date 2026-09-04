@@ -47,7 +47,8 @@ function loop(now) {
   const camY = Math.max(58, Math.min(WORLD.height - innerHeight, engine.state.y - innerHeight / 2));
   ctx.clearRect(0, 0, innerWidth, innerHeight);
   renderWorld(camX, camY, innerWidth, innerHeight);
-  objective.textContent = engine.state.done ? 'Misión completada · explorá' : `Misión: ${MISSION.objective}`;
+  const step = engine.missions.current();
+  objective.textContent = engine.state.done ? '✓ Misión completada · explorá libremente' : `Misión: ${step?.label ?? MISSION.objective}`;
   version.textContent = VERSION;
   frameId = requestAnimationFrame(loop);
 }
