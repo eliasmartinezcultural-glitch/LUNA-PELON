@@ -33,6 +33,7 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
   const dialogue = createDialogueSystem({ state, events, save, show });
   const missions = createMissionSystem({ state, mission, events, save, show });
   const interaction = createInteractionSystem({ state, registry, near, show, save, events, dialogue });
+  input.setInteractionHandler(interaction.interact);
   const navigation = createNavigationSystem({ worldModel, isBlocked: (x, y, radius) => !canOccupy(worldModel, x, y, radius, registry.all().filter((entity) => entity.type === 'npc')) });
   const npcSystem = createNpcSystem({
     registry, navigation, getTimeMinutes: clock.getMinutes,
