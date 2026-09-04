@@ -8,6 +8,7 @@ const dialogue = document.querySelector('#dialogue');
 const objective = document.querySelector('#objective');
 const version = document.querySelector('#version');
 let last = performance.now();
+let frameId = 0;
 
 function show(text) {
   dialogue.textContent = text;
@@ -45,7 +46,16 @@ function loop(now) {
   renderWorld(camX, camY, innerWidth, innerHeight);
   objective.textContent = engine.state.done ? 'Misión completada · explorá' : `Misión: ${MISSION.objective}`;
   version.textContent = VERSION;
-  requestAnimationFrame(loop);
+  frameId = requestAnimationFrame(loop);
 }
+
+function shutdown() {
+  engine.save();
+  cancelAnimationFrame(frameId);
+  engine.destroy();
+}
+
+addEventListener('pagehide', shutdown);
+addEventListener('beforeunload', () => engine.save());
 requestAnimationFrame(loop);
-setInterval(engine.save, 3000);
+const saveTimer = setInterval(engine.save, 3000);
