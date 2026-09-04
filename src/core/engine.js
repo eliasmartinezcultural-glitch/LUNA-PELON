@@ -4,6 +4,7 @@ import { createWorldModel } from './world.js';
 import { createEntityRegistry } from './entity.js';
 import { createInputSystem } from '../systems/input.js';
 import { moveWithCollision } from '../systems/collision.js';
+import { getSurfaceAt, getMovementModifier } from '../systems/transitability.js';
 import { createInteractionSystem } from '../systems/interaction.js';
 import { loadState, saveState } from '../systems/persistence.js';
 
@@ -25,12 +26,14 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
 
   function update(dt) {
     const direction = input.getVector();
+    const surface = getSurfaceAt(worldModel, state.x, state.y);
+    const speed = 230 * getMovementModifier(surface);
     const dynamicEntities = registry.all().filter((entity) => entity.id !== state.playerId);
-    const moved = moveWithCollision(state, direction, worldModel, dt, 230, 14, dynamicEntities);
+    const moved = moveWithCollision(state, direction, worldModel, dt, speed, 14, dynamicEntities);
     registry.setPosition(state.playerId, state.x, state.y);
 
     if (moved) {
-      events.emit('player:moved', { x: state.x, y: state.y });
+      events.emit('player:moved', { x: state.x, y: state.y, surface });
       for (const npc of npcs) if (near(state, npc, 52)) show(`Presioná ESPACIO para hablar con ${npc.name}.`);
       if (near(state, discovery, 65)) show('Presioná ESPACIO para observar la memoria.');
     }
