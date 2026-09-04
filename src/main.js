@@ -22,13 +22,6 @@ function show(text) {
 const engine = createGameEngine({ world: WORLD, npcs: NPCS, discovery: DISCOVERY, mission: MISSION, onMessage: show });
 const renderWorld = createWorldRenderer(ctx, WORLD, engine.entities, () => engine.state);
 
-addEventListener('keydown', (event) => {
-  if (event.key === ' ') {
-    event.preventDefault();
-    engine.interact();
-  }
-});
-
 function resize() {
   const dpr = Math.min(devicePixelRatio || 1, 2);
   canvas.width = innerWidth * dpr;
