@@ -14,9 +14,9 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
   const initial = createGameState(world, mission);
   const state = { ...initial, ...(loadState(storage, world, mission, sanitizeGameState) ?? {}) };
   const registry = createEntityRegistry([
-    { id: state.playerId, type: 'player', x: state.x, y: state.y, interactable: false },
-    ...npcs,
-    discovery,
+    { id: state.playerId, type: 'player', x: state.x, y: state.y, interactable: false, collidable: false, radius: 14 },
+    ...npcs.map((npc) => ({ collidable: true, radius: 14, interactable: true, ...npc })),
+    { collidable: false, interactable: true, ...discovery },
   ]);
   const show = (text) => onMessage?.(text);
   const save = () => saveState(storage, state, world, mission, sanitizeGameState);
@@ -25,7 +25,8 @@ export function createGameEngine({ world, npcs, discovery, mission, storage = lo
 
   function update(dt) {
     const direction = input.getVector();
-    const moved = moveWithCollision(state, direction, worldModel, dt);
+    const dynamicEntities = registry.all().filter((entity) => entity.id !== state.playerId);
+    const moved = moveWithCollision(state, direction, worldModel, dt, 230, 14, dynamicEntities);
     registry.setPosition(state.playerId, state.x, state.y);
 
     if (moved) {
