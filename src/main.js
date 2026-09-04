@@ -1,4 +1,4 @@
-import { WORLD, NPCS, DISCOVERY, MISSION, VERSION } from './data.js';
+import { WORLD, NPCS, DISCOVERY, MISSION, LOCATIONS, DOORS, VERSION } from './data.js';
 import { createGameEngine } from './core/engine.js';
 import { createWorldRenderer } from './presentation/world-renderer.js';
 
@@ -19,8 +19,8 @@ function show(text) {
   show.timer = setTimeout(() => dialogue.classList.add('hidden'), 5200);
 }
 
-const engine = createGameEngine({ world: WORLD, npcs: NPCS, discovery: DISCOVERY, mission: MISSION, onMessage: show });
-const renderWorld = createWorldRenderer(ctx, WORLD, engine.entities, () => engine.state);
+const engine = createGameEngine({ world: WORLD, npcs: NPCS, discovery: DISCOVERY, mission: MISSION, locations: LOCATIONS, doors: DOORS, onMessage: show });
+const renderWorld = createWorldRenderer(ctx, WORLD, engine.entities, () => engine.state, LOCATIONS);
 
 function resize() {
   const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -36,13 +36,16 @@ function loop(now) {
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now;
   engine.update(dt);
-  const camX = Math.max(0, Math.min(WORLD.width - innerWidth, engine.state.x - innerWidth / 2));
-  const camY = Math.max(58, Math.min(WORLD.height - innerHeight, engine.state.y - innerHeight / 2));
+  const activeLocation = engine.locations.current();
+  const viewWidth = activeLocation.width;
+  const viewHeight = activeLocation.height;
+  const camX = activeLocation.id === 'outside' ? Math.max(0, Math.min(viewWidth - innerWidth, engine.state.x - innerWidth / 2)) : Math.max(0, Math.min(viewWidth - innerWidth, engine.state.x - innerWidth / 2));
+  const camY = activeLocation.id === 'outside' ? Math.max(58, Math.min(viewHeight - innerHeight, engine.state.y - innerHeight / 2)) : Math.max(0, Math.min(viewHeight - innerHeight, engine.state.y - innerHeight / 2));
   ctx.clearRect(0, 0, innerWidth, innerHeight);
   renderWorld(camX, camY, innerWidth, innerHeight);
   const step = engine.missions.current();
   objective.textContent = engine.state.done ? '✓ Misión completada · explorá libremente' : `Misión: ${step?.label ?? MISSION.objective}`;
-  version.textContent = VERSION;
+  version.textContent = `${VERSION} · ${activeLocation.name}`;
   frameId = requestAnimationFrame(loop);
 }
 
