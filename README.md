@@ -3,18 +3,26 @@
 RPG pixel-art educativo, construido desde cero para navegador.
 
 ## Versión actual
-**v0.1.0 — Fundación**
+**v0.1.1 — Hardening del núcleo**
 
-### Núcleo
-- Estado único de Luna y persistencia local.
-- Mundo, NPC, misión y descubrimiento definidos como datos separados.
-- Movimiento por teclado y controles táctiles.
-- Cámara siguiendo a la protagonista.
-- Interacción y diálogo.
-- Primera misión funcional.
+## Objetivo de esta versión
+Antes de agregar contenido o estética, se establece una infraestructura para que cada cambio sea aislado, validable, reversible y trazable.
 
-### Arquitectura
-`src/data.js` contiene datos del mundo y contenido. `src/main.js` contiene el bucle, entrada, estado y render. La presentación vive en `styles.css` e `index.html`.
+### Protección
+- respaldo estable de `v0.1.0`;
+- contrato del núcleo;
+- arquitectura por capas;
+- protocolo de cambios;
+- validación automática mediante GitHub Actions;
+- control de versión coherente.
+
+### Núcleo existente conservado
+- estado y persistencia local;
+- mundo, NPC, misión y descubrimiento como datos;
+- teclado y controles táctiles;
+- cámara;
+- interacción y diálogo;
+- primera misión.
 
 ### Regla de evolución
-Cada versión debe ampliar el juego sin duplicar sistemas ni romper el núcleo. Los contenidos históricos deberán revisarse con fuentes antes de convertirse en hechos definitivos del juego.
+No se vuelve a borrar el proyecto para corregir arquitectura. Las reconstrucciones se hacen por capas, en ramas aisladas, con respaldo y rollback.
