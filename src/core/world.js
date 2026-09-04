@@ -16,7 +16,12 @@ export function createWorldModel(world) {
     width: world.river.width,
     height: world.height,
   } : null;
-  const bridge = world.bridge ?? null;
+  const bridge = world.bridge && Number.isFinite(world.bridge.x) ? {
+    x: world.bridge.x,
+    y: world.bridge.y,
+    width: world.bridge.width ?? world.bridge.w ?? 0,
+    height: world.bridge.height ?? world.bridge.h ?? 0,
+  } : null;
 
   return Object.freeze({
     bounds: Object.freeze(bounds),
@@ -27,7 +32,7 @@ export function createWorldModel(world) {
     obstacles: freezeList(obstacles),
     points: Object.freeze({ ...points }),
     river: river ? Object.freeze(river) : null,
-    bridge: bridge ? Object.freeze({ ...bridge }) : null,
+    bridge: bridge ? Object.freeze(bridge) : null,
   });
 }
 
