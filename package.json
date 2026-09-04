@@ -6,6 +6,6 @@
   "description": "Fundación modular del RPG Luna Pelón",
   "scripts": {
     "check": "node scripts/validate.mjs",
-    "test": "node --test tests/core-contract.test.mjs"
+    "test": "node --test tests/*.test.mjs"
   }
 }
