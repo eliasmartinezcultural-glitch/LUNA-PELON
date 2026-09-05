@@ -17,6 +17,9 @@ export function createInteractionSystem({ state, registry, near, show, save, eve
     const discovery = targets.find((entity) => entity.type === 'discovery');
     if (discovery) {
       state.seen = true;
+      state.knowledge = state.knowledge ?? { memories: [] };
+      state.knowledge.memories = Array.isArray(state.knowledge.memories) ? state.knowledge.memories : [];
+      if (!state.knowledge.memories.includes(discovery.id)) state.knowledge.memories.push(discovery.id);
       show(`${discovery.title}\n${discovery.text}`);
       events.emit('entity:interacted', { entityId: discovery.id, type: discovery.type });
       events.emit('history:discovered', { entityId: discovery.id });
