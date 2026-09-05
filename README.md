@@ -3,10 +3,10 @@
 RPG pixel-art educativo, construido desde cero para navegador y preparado para crecer por capas.
 
 ## Versión actual
-**v0.8.0 — Misiones + progresión por eventos**
+**v0.9.0 — Location slice + misiones + progresión por eventos**
 
 ## Qué está construido
-La estructura separa estado, eventos, motor, entrada, colisión, transitabilidad, navegación, comportamiento de NPCs, reloj, diálogo, misiones, consultas espaciales, interacción, persistencia, mundo, entidades y presentación.
+La estructura separa estado, eventos, motor, entrada, colisión, transitabilidad, navegación, comportamiento de NPCs, reloj, diálogo, misiones, consultas espaciales, interacción, persistencia, locations, mundo, entidades y presentación.
 
 ### Estructura activa
 - `src/core/state.js` — estado, saneamiento, identidad estable, memoria narrativa y progreso.
@@ -23,13 +23,16 @@ La estructura separa estado, eventos, motor, entrada, colisión, transitabilidad
 - `src/systems/dialogue.js` — conversaciones declarativas y eventos narrativos.
 - `src/systems/mission.js` — objetivos, pasos, filtros, progreso y finalización.
 - `src/systems/interaction.js` — interacción basada en entidades.
+- `src/systems/location.js` — transiciones declarativas entre locations.
 - `src/systems/persistence.js` — guardado seguro y saneado.
 - `src/presentation/world-renderer.js` — presentación desde datos.
 - `src/main.js` — composición, ciclo y HUD de objetivo.
-- `tests/core-contract.test.mjs` — contratos ejecutables.
+- `tests/` — contratos ejecutables.
 
-## v0.8.0
+## v0.9.0
 Las misiones son declarativas: cada una define pasos y eventos capaces de completarlos. El diálogo emite hechos; la misión decide si ese hecho corresponde al objetivo activo. El progreso queda guardado y el HUD muestra dinámicamente el siguiente objetivo.
+
+El primer vertical slice de locations permite exterior → Centro Comunitario → interior → salida → exterior, conservando `currentLocationId` en el estado persistente y reutilizando el mismo contrato para futuras locations.
 
 La misión inicial de Luna recorre cuatro estados: conocer a Marta → escuchar su explicación → encontrar la primera memoria → regresar con Marta.
 
@@ -41,4 +44,4 @@ La misión inicial de Luna recorre cuatro estados: conocer a Marta → escuchar 
 No se presupone experiencia previa. Cada capa tiene propósito, dueño, entradas/salidas, conexiones explícitas, validación y criterio de terminación.
 
 ## Desarrollo seguro
-GitHub es la fuente de verdad; `main` se integra mediante cambios aislados y revisables; cada versión estable conserva rollback; no se hacen limpiezas destructivas; los duplicados se retiran después de conectar y validar su reemplazo.
+GitHub es la fuente de verdad; `main` se integra mediante cambios aislados y revisables; `core/v0.9.0-sync` es la línea canónica de desarrollo de esta versión; cada versión estable conserva rollback; no se hacen limpiezas destructivas; los duplicados se retiran después de conectar y validar su reemplazo.
