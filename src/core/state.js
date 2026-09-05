@@ -15,6 +15,7 @@ export function createGameState(world, mission) {
     missionId: mission.id,
     mission: { id: mission.id, status: 'active', currentStep: 0, completed: [] },
     dialogue: { encounters: {}, history: [] },
+    knowledge: { memories: [] },
   };
 }
 
@@ -30,6 +31,8 @@ export function sanitizeGameState(raw, world, mission) {
   const rawHistory = Array.isArray(rawDialogue.history) ? rawDialogue.history : [];
   const encounters = Object.fromEntries(Object.entries(rawEncounters).filter(([id, count]) => typeof id === 'string' && Number.isInteger(count) && count >= 0).slice(0, 100));
   const history = rawHistory.filter((entry) => entry && typeof entry === 'object' && typeof entry.entityId === 'string' && typeof entry.nodeId === 'string' && Number.isInteger(entry.encounter)).slice(-50);
+  const rawKnowledge = raw.knowledge && typeof raw.knowledge === 'object' ? raw.knowledge : {};
+  const memories = Array.isArray(rawKnowledge.memories) ? [...new Set(rawKnowledge.memories.filter((id) => typeof id === 'string'))].slice(0, 200) : [];
   const rawMission = raw.mission && typeof raw.mission === 'object' ? raw.mission : {};
   const completed = Array.isArray(rawMission.completed) ? rawMission.completed.filter((id) => typeof id === 'string').slice(0, 100) : [];
   const maxStep = Array.isArray(mission?.steps) ? mission.steps.length : 0;
@@ -49,5 +52,6 @@ export function sanitizeGameState(raw, world, mission) {
     missionId: mission.id,
     mission: { id: mission.id, status: completedMission ? 'completed' : 'active', currentStep, completed },
     dialogue: { encounters, history },
+    knowledge: { memories },
   };
 }
