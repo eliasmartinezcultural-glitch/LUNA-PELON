@@ -1,6 +1,6 @@
 # LUNA PELÓN — ARQUITECTURA OPERATIVA
 
-**Versión:** v0.8.0
+**Versión:** v0.9.0
 
 La arquitectura soporta un RPG territorial creciente sin reescribir el motor para cada personaje, lugar, misión u objeto.
 
@@ -16,14 +16,12 @@ src/
 tests/          # contratos ejecutables
 ```
 
-## v0.8.0 — Misiones + progresión por eventos
-Las misiones pasan a ser un sistema independiente. Una misión declara pasos, eventos que los completan y filtros opcionales por entidad o nodo narrativo.
-
-El flujo queda desacoplado:
+## v0.9.0 — Location slice + base de progresión
+Las misiones pasan a ser un sistema independiente y el mundo incorpora un contrato de locations para transiciones entre exterior e interior. El flujo narrativo queda desacoplado y los lugares se declaran como contenido.
 
 `contenido → evento → misión → progreso persistente → HUD`
 
-El diálogo ya no decide si una misión termina. Emite hechos narrativos; el sistema de misiones determina si ese hecho corresponde al paso activo. Esto evita que personajes concretos queden codificados dentro del engine.
+El diálogo no decide si una misión termina. Emite hechos narrativos; el sistema de misiones determina si ese hecho corresponde al paso activo. Esto evita que personajes concretos queden codificados dentro del engine.
 
 El progreso persistente conserva estado activo/completado, índice del paso y lista acotada de pasos realizados. Los guardados antiguos se aceptan mediante saneamiento y reciben la estructura nueva sin depender de código narrativo específico.
 
